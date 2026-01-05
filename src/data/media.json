@@ -1,0 +1,100 @@
+{
+  "photos": [
+    {
+      "id": "1",
+      "title": "NYA National Summit 2024",
+      "url": "/placeholder.svg",
+      "category": "Events"
+    },
+    {
+      "id": "2",
+      "title": "Delhi Chapter Meet",
+      "url": "/placeholder.svg",
+      "category": "Chapters"
+    },
+    {
+      "id": "3",
+      "title": "Youth Parliament Session",
+      "url": "/placeholder.svg",
+      "category": "Events"
+    },
+    {
+      "id": "4",
+      "title": "Anti-Corruption Rally",
+      "url": "/placeholder.svg",
+      "category": "Campaigns"
+    },
+    {
+      "id": "5",
+      "title": "Campus Ambassador Training",
+      "url": "/placeholder.svg",
+      "category": "Training"
+    },
+    {
+      "id": "6",
+      "title": "Community Outreach Program",
+      "url": "/placeholder.svg",
+      "category": "Outreach"
+    }
+  ],
+  "videos": [
+    {
+      "id": "1",
+      "title": "What is NYA?",
+      "embedUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+      "thumbnail": "/placeholder.svg"
+    },
+    {
+      "id": "2",
+      "title": "Join the Movement",
+      "embedUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+      "thumbnail": "/placeholder.svg"
+    },
+    {
+      "id": "3",
+      "title": "Impact Stories 2024",
+      "embedUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+      "thumbnail": "/placeholder.svg"
+    }
+  ],
+  "pressReleases": [
+    {
+      "id": "1",
+      "title": "NYA Launches 10 New Chapters Across India",
+      "date": "2024-12-01",
+      "summary": "National Youth Alliance expands its presence with new chapters in Tier-2 cities."
+    },
+    {
+      "id": "2",
+      "title": "Youth Parliament Resolution on Education",
+      "date": "2024-11-15",
+      "summary": "NYA's Youth Parliament passes resolution demanding education reforms."
+    },
+    {
+      "id": "3",
+      "title": "Partnership with Legal Aid Society",
+      "date": "2024-10-20",
+      "summary": "NYA partners with national legal aid organization to support youth rights."
+    }
+  ],
+  "podcasts": [
+    {
+      "id": "1",
+      "title": "Episode 1: Building a Movement",
+      "duration": "45 min",
+      "date": "2024-12-01"
+    },
+    {
+      "id": "2",
+      "title": "Episode 2: Fighting Corruption",
+      "duration": "38 min",
+      "date": "2024-11-15"
+    },
+    {
+      "id": "3",
+      "title": "Episode 3: Youth in Politics",
+      "duration": "52 min",
+      "date": "2024-11-01"
+    }
+  ]
+}

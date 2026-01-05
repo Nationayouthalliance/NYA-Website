@@ -1,0 +1,29 @@
+[
+  {
+    "id": "1",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "status": "active",
+    "members": 69,
+    "lead": "Nishit Suman",
+    "founded": "2025"
+  },
+  {
+    "id": "2",
+    "city": "Delhi",
+    "state": "Delhi NCR",
+    "status": "active",
+    "members": 67,
+    "lead": "Fanta- Yubi",
+    "founded": "2025"
+  },
+  {
+    "id": "3",
+    "city": "Bangalore",
+    "state": "Karnataka",
+    "status": "active",
+    "members": 69,
+    "lead": "Arnold Sam",
+    "founded": "2025"
+  }
+]

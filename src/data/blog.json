@@ -1,0 +1,57 @@
+[
+  {
+    "id": "1",
+    "title": "How 500 Students Changed Their Campus Forever",
+    "excerpt": "When students at Delhi University decided enough was enough, they didn't just complain — they organized.",
+    "content": "It started with a simple RTI request. What the students found was shocking: funds meant for student welfare had been sitting unused for years. Within three months, those funds were being used to build new facilities, provide scholarships, and improve campus life for everyone.",
+    "author": "Priya Sharma",
+    "date": "2024-12-15",
+    "category": "Success Stories",
+    "readTime": "5 min",
+    "featured": true
+  },
+  {
+    "id": "2",
+    "title": "Why Every Village Needs Youth Advocates",
+    "excerpt": "Rural India is waking up, and it's the young people leading the charge.",
+    "content": "From Rajasthan to Kerala, young advocates are bridging the gap between government schemes and the people who need them most. They're not waiting for change — they're making it happen.",
+    "author": "Vikram Singh",
+    "date": "2024-12-10",
+    "category": "Opinion",
+    "readTime": "4 min",
+    "featured": false
+  },
+  {
+    "id": "3",
+    "title": "The Power of Saying 'We Won't Accept This'",
+    "excerpt": "Collective action works. Here's proof from our chapters across India.",
+    "content": "When individuals stand alone, systems ignore them. When communities stand together, systems change. This is the story of how NYA chapters across 10 cities coordinated to address a national policy gap.",
+    "author": "Arjun Patel",
+    "date": "2024-12-05",
+    "category": "Movement",
+    "readTime": "6 min",
+    "featured": true
+  },
+  {
+    "id": "4",
+    "title": "Digital Tools for Grassroots Organizing",
+    "excerpt": "Technology isn't just for startups — it's for movements too.",
+    "content": "Learn how NYA uses technology to connect, organize, and amplify youth voices across India. From encrypted communication to collaborative documentation, here's our tech stack for social change.",
+    "author": "Rohan Menon",
+    "date": "2024-11-28",
+    "category": "How-To",
+    "readTime": "7 min",
+    "featured": false
+  },
+  {
+    "id": "5",
+    "title": "From Frustration to Action: A Beginner's Guide",
+    "excerpt": "Feeling angry about corruption? Good. Here's how to channel that energy.",
+    "content": "We've all been there — reading news that makes our blood boil, feeling helpless against systemic issues. But anger without action is just noise. This guide will help you transform frustration into meaningful change.",
+    "author": "Aisha Khan",
+    "date": "2024-11-20",
+    "category": "How-To",
+    "readTime": "8 min",
+    "featured": false
+  }
+]

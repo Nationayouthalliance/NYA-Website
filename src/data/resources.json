@@ -1,0 +1,98 @@
+[
+  {
+    "id": "1",
+    "title": "RTI Application Guide",
+    "description": "Complete guide to filing Right to Information requests effectively",
+    "category": "Anti-corruption",
+    "type": "guide",
+    "link": "#"
+  },
+  {
+    "id": "2",
+    "title": "Central Vigilance Commission",
+    "description": "Official portal to report corruption in government departments",
+    "category": "Government portals",
+    "type": "link",
+    "link": "https://cvc.gov.in"
+  },
+  {
+    "id": "3",
+    "title": "Youth Helpline Directory",
+    "description": "National helpline numbers for youth in distress",
+    "category": "Youth help",
+    "type": "resource",
+    "link": "#"
+  },
+  {
+    "id": "4",
+    "title": "Know Your Rights",
+    "description": "Essential legal rights every Indian citizen should know",
+    "category": "Legal help",
+    "type": "guide",
+    "link": "#"
+  },
+  {
+    "id": "5",
+    "title": "Lokpal & Lokayuktas Portal",
+    "description": "File complaints against public servants",
+    "category": "Government portals",
+    "type": "link",
+    "link": "https://lokpal.gov.in"
+  },
+  {
+    "id": "6",
+    "title": "Community Organizing 101",
+    "description": "How to build and lead a local chapter",
+    "category": "Guides",
+    "type": "guide",
+    "link": "#"
+  },
+  {
+    "id": "7",
+    "title": "CPGRAMS",
+    "description": "Centralized Public Grievance Redressal System",
+    "category": "Government portals",
+    "type": "link",
+    "link": "https://pgportal.gov.in"
+  },
+  {
+    "id": "8",
+    "title": "PIL Filing Guide",
+    "description": "How to file a Public Interest Litigation",
+    "category": "Legal help",
+    "type": "guide",
+    "link": "#"
+  },
+  {
+    "id": "9",
+    "title": "Digital Safety for Activists",
+    "description": "Protect yourself online while doing advocacy work",
+    "category": "Guides",
+    "type": "guide",
+    "link": "#"
+  },
+  {
+    "id": "10",
+    "title": "National Youth Portal",
+    "description": "Government resources and opportunities for youth",
+    "category": "Youth help",
+    "type": "link",
+    "link": "https://nyks.nic.in"
+  },
+  {
+    "id": "11",
+    "title": "Anti-Corruption Hotline",
+    "description": "1031 - National Anti-Corruption Hotline number",
+    "category": "Anti-corruption",
+    "type": "resource",
+    "link": "#"
+  },
+  {
+    "id": "12",
+    "title": "Free Legal Aid Clinics",
+    "description": "Find free legal aid services near you",
+    "category": "Legal help",
+    "type": "resource",
+    "link": "#"
+  }
+]

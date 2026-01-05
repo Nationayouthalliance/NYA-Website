@@ -1,0 +1,47 @@
+[
+  {
+    "id": "1",
+    "name": "Nishit Suman",
+    "wing": "Strategy and Analysis",
+    "role": "National Coordinator",
+    "chapter": "Mumbai",
+    "bio": "A passionate Techie, Developer & Ethical Hacker who believes in the power of community to drive change. Nishit has been working with grassroots organizations for Starting of NYA",
+    "whatTheyDo": "Coordinates all national initiatives and connects chapters across India. Ensures every voice is heard."
+  },
+  {
+    "id": "2",
+    "name": "IPG",
+    "wing": "Training and Management",
+    "role": "Meeting Coordination and organizer",
+    "chapter": "Delhi",
+    "bio": "Ethical Hacker turned activist. IPG fights for transparency and accountability in public systems.",
+    "whatTheyDo": "Coordinates all national initiatives for Meeting organizing and coordination"
+  },
+  {
+    "id": "3",
+    "name": "Shaun Sebastian",
+    "wing": "Strategy and Analysis",
+    "role": "Strategist",
+    "chapter": "NRI",
+    "bio": "Blash blash ablsh i am done writing these, its boring dude",
+    "whatTheyDo": "What they do? Timepass, Bruh I hate these sort of writing"
+  },
+  {
+    "id": "4",
+    "name": "Arnold Sam",
+    "wing": "Strategy and Analysis",
+    "role": "Strategist",
+    "chapter": "Bangalore",
+    "bio": "Blash blash ablsh i am done writing these, its boring dude",
+    "whatTheyDo": "What they do? Timepass, Bruh I hate these sort of writing"
+  },
+ {
+    "id": "5",
+    "name": "Shayan",
+    "wing": "Technical and Resources",
+    "role": "Technical Unit Head",
+    "chapter": "Patna",
+    "bio": "Blash blash ablsh i am done writing these, its boring dude",
+    "whatTheyDo": "What they do? Timepass, Bruh I hate these sort of writing"
+  }
+]
