@@ -55,46 +55,37 @@ const ChaptersPage = () => {
       <section className="pt-32 pb-16 bg-gradient-to-b from-muted to-background relative overflow-hidden">
         <div className="absolute top-20 left-20 w-64 h-64 rounded-full bg-accent/10 blur-3xl" />
         <div className="absolute bottom-0 right-10 w-48 h-48 rounded-full bg-primary/10 blur-3xl" />
-        
         <div className="container mx-auto px-4 relative">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <AnimatedSection>
-              <span className="sticker-accent inline-block mb-6">
+          <AnimatedSection className="text-center max-w-3xl mx-auto">
+            <motion.div
+              initial={{ rotate: -5 }}
+              animate={{ rotate: 5 }}
+              transition={{ repeat: Infinity, repeatType: 'reverse', duration: 2 }}
+              className="inline-block mb-6"
+            >
+              <span className="sticker-accent text-lg">
                 <MapPin className="inline mr-2" size={18} />
-                Growing nationwide
+                Meet the humans!
               </span>
-              <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl text-foreground mb-6">
-                Our Chapters
-              </h1>
-              <p className="text-xl text-muted-foreground mb-8">
-                NYA chapters are everywhere — from metros to tier-2 cities. 
-                Each chapter is autonomous, yet connected by a shared mission.
-              </p>
-              <Link to="/join">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="btn-hero"
-                >
-                  <Rocket size={20} />
-                  Start a Chapter
-                </motion.button>
-              </Link>
-            </AnimatedSection>
-
-            <AnimatedSection direction="right" className="hidden lg:block">
-              <motion.div
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 4, repeat: Infinity }}
+            </motion.div>
+            <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl text-foreground mb-6">
+              Our Chapters
+            </h1>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
+              NYA chapters are everywhere — from metros to tier-2 cities. 
+              Each chapter is autonomous, yet connected by a shared mission.
+            </p>
+            <Link to="/join">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.98 }}
+                className="btn-hero"
               >
-                <img 
-                  src={indiaMap} 
-                  alt="NYA Chapters across India" 
-                  className="w-full max-w-md mx-auto drop-shadow-2xl"
-                />
-              </motion.div>
-            </AnimatedSection>
-          </div>
+                <Rocket size={20} />
+                Start a Chapter
+              </motion.button>
+            </Link>
+          </AnimatedSection>
         </div>
       </section>
 
