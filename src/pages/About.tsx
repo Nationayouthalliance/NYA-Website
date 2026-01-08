@@ -27,7 +27,7 @@ const timeline = [
   {
     year: '2026 JAN',
     title: 'The Foundation',
-    description: 'We made the Founadtion of NYA with different roles and work to reach and connect more people and grow community to at the end get people for nation wide movements The revolution continues.',
+    description: 'We made the Foundation of NYA with different roles and work to reach and connect more people and grow community to at the end get people for nation wide movements The revolution continues.',
   },
 ];
 
@@ -291,7 +291,7 @@ const AboutPage = () => {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.98 }}
-                className="px-8 py-4 bg-white text-black font-bold rounded-full text-lg shadow-lg inline-flex items-center gap-2"
+                className="px-8 py-4 bg-white text-orange font-bold rounded-full text-lg shadow-lg inline-flex items-center gap-2"
               >
                 Join the Movement
                 <ArrowRight size={20} />

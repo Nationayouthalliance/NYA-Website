@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Sparkles, Star } from 'lucide-react';
+import { X, Sparkles, Star, Search } from 'lucide-react';
 import { Layout } from '@/components/Layout';
 import { AnimatedSection, StaggerContainer, StaggerItem, HoverScale } from '@/components/AnimatedElements';
+import { Input } from '@/components/ui/input';
 import teamData from '@/data/team.json';
 
 interface TeamMember {
@@ -16,9 +17,9 @@ interface TeamMember {
 }
 
 const wingColors: Record<string, string> = {
-  'Core Leadership': 'bg-primary',
-  'Anti-Corruption': 'bg-orange',
-  'Technology': 'bg-accent',
+  'Strategy and Analysis': 'bg-primary',
+  'Training and Management': 'bg-orange',
+  'Technical and Resources': 'bg-accent',
   'Outreach': 'bg-purple',
   'Legal Aid': 'bg-green',
   'Campus': 'bg-yellow text-foreground',
@@ -28,6 +29,18 @@ const wingColors: Record<string, string> = {
 
 const TeamPage = () => {
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredTeam = useMemo(() => {
+    if (!searchQuery.trim()) return teamData as TeamMember[];
+    const query = searchQuery.toLowerCase();
+    return (teamData as TeamMember[]).filter(member =>
+      member.name.toLowerCase().includes(query) ||
+      member.role.toLowerCase().includes(query) ||
+      member.wing.toLowerCase().includes(query) ||
+      member.chapter.toLowerCase().includes(query)
+    );
+  }, [searchQuery]);
 
   return (
     <Layout>
@@ -79,11 +92,31 @@ const TeamPage = () => {
         </div>
       </section>
 
+      {/* Search Bar */}
+      <section className="py-6 bg-background border-b border-border sticky top-20 z-30 backdrop-blur-xl bg-background/90">
+        <div className="container mx-auto px-4">
+          <div className="max-w-md mx-auto relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
+            <Input
+              placeholder="Search by name, role, wing, or city..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-12 rounded-full h-12 bg-muted border-0 focus-visible:ring-primary"
+            />
+          </div>
+        </div>
+      </section>
+
       {/* Team Grid */}
       <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
-          <StaggerContainer className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {(teamData as TeamMember[]).map((member, index) => (
+          {filteredTeam.length === 0 ? (
+            <div className="text-center py-16">
+              <p className="text-muted-foreground text-lg">No team members found matching "{searchQuery}"</p>
+            </div>
+          ) : (
+            <StaggerContainer className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {filteredTeam.map((member, index) => (
               <StaggerItem key={member.id}>
                 <HoverScale scale={1.03}>
                   <motion.div
@@ -115,7 +148,8 @@ const TeamPage = () => {
                 </HoverScale>
               </StaggerItem>
             ))}
-          </StaggerContainer>
+            </StaggerContainer>
+          )}
         </div>
       </section>
 

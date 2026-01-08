@@ -1,0 +1,12 @@
+{
+  "siteName": "National Youth Alliance India",
+  "heroText": "Together, we're building a corruption-free India",
+  "footerText": "Join the movement. Be the change.",
+  "maintenanceMode": false,
+  "stats": {
+    "activeMembers": 150,
+    "chapters": 10,
+    "statesCovered": 5,
+    "issuesResolved": 5
+  }
+}

@@ -12,7 +12,7 @@
     "id": "2",
     "city": "Delhi",
     "state": "Delhi NCR",
-    "status": "active",
+    "status": "growing",
     "members": 67,
     "lead": "Fanta- Yubi",
     "founded": "2025"
@@ -21,7 +21,7 @@
     "id": "3",
     "city": "Bangalore",
     "state": "Karnataka",
-    "status": "active",
+    "status": "starting",
     "members": 69,
     "lead": "Arnold Sam",
     "founded": "2025"

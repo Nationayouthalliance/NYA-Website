@@ -1,0 +1,39 @@
+{
+  "timeline": [
+    {
+      "id": "j-001",
+      "year": "2020",
+      "title": "The Spark",
+      "description": "A group of college students frustrated with corruption decided to stop complaining and start acting. NYA was born in a small hostel room.",
+      "order": 1
+    },
+    {
+      "id": "j-002",
+      "year": "2021",
+      "title": "First Chapter",
+      "description": "Our first official chapter launched in Delhi with 15 founding members. We organized our first awareness campaign reaching 500 students.",
+      "order": 2
+    },
+    {
+      "id": "j-003",
+      "year": "2022",
+      "title": "Going Pan-India",
+      "description": "Expanded to 5 states with 10 active chapters. Launched our reporting platform that received 100+ reports in the first month.",
+      "order": 3
+    },
+    {
+      "id": "j-004",
+      "year": "2023",
+      "title": "1000+ Strong",
+      "description": "Crossed 1000 active members milestone. Featured in national media for grassroots anti-corruption work. Partnered with 20+ colleges.",
+      "order": 4
+    },
+    {
+      "id": "j-005",
+      "year": "2024",
+      "title": "The Movement Grows",
+      "description": "Present in 15 states with 25+ chapters. Launched campus ambassador program. Youth across India are joining the fight for transparency.",
+      "order": 5
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "admins": [
+    {
+      "email": "master@nya.org",
+      "name": "Arjun Sharma",
+      "isMaster": true,
+      "permissions": {
+        "homeManager": true,
+        "journeyManager": true,
+        "team": true,
+        "chapters": true,
+        "media": true,
+        "resources": true,
+        "blog": true,
+        "joinRequests": true,
+        "reports": true,
+        "logs": true,
+        "admins": true,
+        "settings": true
+      }
+    },
+    {
+      "email": "priya@nya.org",
+      "name": "Priya Patel",
+      "isMaster": false,
+      "permissions": {
+        "homeManager": true,
+        "journeyManager": true,
+        "team": true,
+        "chapters": true,
+        "media": false,
+        "resources": false,
+        "blog": false,
+        "joinRequests": true,
+        "reports": true,
+        "logs": true,
+        "admins": false,
+        "settings": false
+      }
+    },
+    {
+      "email": "rahul@nya.org",
+      "name": "Rahul Verma",
+      "isMaster": false,
+      "permissions": {
+        "homeManager": false,
+        "journeyManager": false,
+        "team": false,
+        "chapters": false,
+        "media": true,
+        "resources": true,
+        "blog": true,
+        "joinRequests": false,
+        "reports": false,
+        "logs": true,
+        "admins": false,
+        "settings": false
+      }
+    },
+    {
+      "email": "sneha@nya.org",
+      "name": "Sneha Gupta",
+      "isMaster": false,
+      "permissions": {
+        "homeManager": false,
+        "journeyManager": false,
+        "team": true,
+        "chapters": true,
+        "media": false,
+        "resources": false,
+        "blog": false,
+        "joinRequests": true,
+        "reports": false,
+        "logs": true,
+        "admins": false,
+        "settings": false
+      }
+    }
+  ]
+}

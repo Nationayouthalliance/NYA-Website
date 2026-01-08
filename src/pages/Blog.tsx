@@ -231,13 +231,13 @@ const Blog = () => {
               <input
                 type="email"
                 placeholder="your@email.com"
-                className="flex-1 px-5 py-3 rounded-full bg-white/10 border border-white/30 text-white placeholder:text-white/50 focus:bg-white/20 focus:border-white outline-none transition-all"
+                className="flex-1 px-5 py-3 rounded-full bg-white/50 border border-white/70 text-white placeholder:text-white/80 focus:bg-white/30 focus:border-white outline-none transition-all"
               />
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 type="submit"
-                className="px-6 py-3 bg-white text-foreground font-bold rounded-full shadow-lg"
+                className="px-6 py-3 bg-white text-orange font-bold rounded-full shadow-lg"
               >
                 Subscribe
               </motion.button>

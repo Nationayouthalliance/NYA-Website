@@ -9,8 +9,10 @@ import {
   MapPin, 
   Phone,
   Heart,
+  Facebook,
   ExternalLink
 } from 'lucide-react';
+import { FaDiscord, FaRedditAlien, FaPinterestP } from "react-icons/fa";
 
 const footerLinks = {
   movement: [
@@ -33,10 +35,13 @@ const footerLinks = {
 };
 
 const socialLinks = [
-  { name: 'Twitter', icon: Twitter, url: '#' },
-  { name: 'Instagram', icon: Instagram, url: '#' },
-  { name: 'LinkedIn', icon: Linkedin, url: '#' },
-  { name: 'YouTube', icon: Youtube, url: '#' },
+  { name: 'Discord', icon: FaDiscord, url: 'https://discord.gg/EVSEgZ2c' },
+  { name: 'Instagram', icon: Instagram, url: 'https://www.instagram.com/nationalyouthalliance.genz/' },
+  { name: 'Facebook', icon: Facebook, url: 'https://www.facebook.com/people/National-Youth-Alliance/61585687675924/' },
+  { name: 'Twitter', icon: Twitter, url: 'https://x.com/NYA_Genz' },
+  { name: 'YouTube', icon: Youtube, url: 'https://www.youtube.com/@NationalYouthAlliance-w6i' },
+  { name: 'Pinterest', icon: FaPinterestP, url: 'https://in.pinterest.com/nationalyouthalliance/' },
+  { name: 'Reddit', icon: FaRedditAlien, url: '#' },
 ];
 
 export const Footer = () => {
@@ -53,7 +58,7 @@ export const Footer = () => {
           <div className="lg:col-span-2">
             <Link to="/" className="flex items-center gap-3 mb-6">
               <div className="w-14 h-14 rounded-2xl bg-gradient-hero flex items-center justify-center text-foreground font-display font-bold text-xl">
-                NYA
+                <img src="src/components/logo.png" alt="NYA Logo" />
               </div>
               <div>
                 <span className="font-display font-bold text-xl text-background">
@@ -142,7 +147,7 @@ export const Footer = () => {
             Made with <Heart size={14} className="text-primary fill-primary" /> by youth, for youth
           </p>
           <p className="text-background/50 text-sm">
-            © {new Date().getFullYear()} National Youth Alliance India. All rights reserved.
+            © {new Date().getFullYear()} National Youth Alliance. All rights reserved.
           </p>
         </div>
       </div>

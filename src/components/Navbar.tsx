@@ -46,7 +46,7 @@ export const Navbar = () => {
           scrolled 
             ? 'bg-background/95 backdrop-blur-xl shadow-lg border-b border-border/50' 
             : showTransparent 
-              ? 'bg-transparent' 
+              ? 'bg-black/60' // semi-transparent black
               : 'bg-background/95 backdrop-blur-xl shadow-sm border-b border-border/30'
         }`}
       >
@@ -58,7 +58,7 @@ export const Navbar = () => {
                 whileHover={{ rotate: 10, scale: 1.1 }}
                 className="w-12 h-12 rounded-2xl bg-gradient-hero flex items-center justify-center text-white font-display font-bold text-xl shadow-lg"
               >
-                NYA
+                <img src="src/components/logo.png" alt="NYA Logo" />
               </motion.div>
               <div className="hidden sm:block">
                 <span className={`font-display font-bold text-lg transition-colors duration-300 ${
@@ -99,17 +99,17 @@ export const Navbar = () => {
                 to="/report"
                 className={`px-5 py-2.5 text-sm font-semibold transition-colors ${
                   showTransparent 
-                    ? 'text-white/90 hover:text-white' 
+                    ? 'text-white/90 hover:text-[#da523d]' 
                     : 'text-foreground hover:text-primary'
                 }`}
               >
                 Report Issue
               </Link>
               <Link
-                to="/join"
+                to="/join-nya"
                 className={`px-6 py-2.5 text-sm font-bold rounded-full hover:scale-105 transition-all shadow-md ${
                   showTransparent 
-                    ? 'bg-white text-foreground hover:bg-white/90' 
+                    ? 'bg-orange text-black hover:bg-white/90' 
                     : 'bg-primary text-primary-foreground'
                 }`}
               >
@@ -176,7 +176,7 @@ export const Navbar = () => {
                   Report Issue
                 </Link>
                 <Link
-                  to="/join"
+                  to="/join-nya"
                   className="block px-6 py-4 rounded-2xl text-lg font-bold bg-gradient-hero text-white text-center"
                 >
                   Join NYA →

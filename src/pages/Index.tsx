@@ -13,7 +13,7 @@ const stats = [
   { label: 'Active Members', value: 150, suffix: '+', icon: Users },
   { label: 'Chapters', value: 10, suffix: '', icon: MapPin },
   { label: 'States Covered', value: 5, suffix: '', icon: Flag },
-  { label: 'Issues Resolved', value: 50, suffix: '+', icon: Shield },
+  { label: 'Issues Resolved', value: 6, suffix: '+', icon: Shield },
 ];
 
 const features = [
@@ -114,9 +114,9 @@ const Index = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.8 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4"
+            className="flex flex-col sm:flex-row items-center justify-center gap-6"
           >
-            <Link to="/join">
+            <Link to="/join-nya">
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.98 }}
@@ -191,7 +191,7 @@ const Index = () => {
                 </div>
                 <motion.div 
                   whileHover={{ rotate: -1, scale: 1.02 }}
-                  className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-3/4 rounded-3xl overflow-hidden shadow-xl border-4 border-background"
+                  className="absolute -bottom-40 left-1/4 -translate-x-1/2 w-3/4 rounded-3xl overflow-hidden shadow-xl border-4 border-background"
                 >
                   <img src={community3} alt="Rally" className="w-full h-48 object-cover" />
                 </motion.div>
@@ -331,11 +331,11 @@ const Index = () => {
               a campus ambassador — there's a place for you at NYA.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link to="/join">
+              <Link to="/join-nya">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.98 }}
-                  className="px-8 py-4 bg-white text-black font-bold rounded-full text-lg shadow-lg hover:shadow-xl transition-shadow"
+                  className="px-8 py-4 bg-white text-orange font-bold rounded-full text-lg shadow-lg hover:shadow-xl transition-shadow"
                 >
                   Join NYA →
                 </motion.button>

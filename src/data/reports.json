@@ -1,0 +1,44 @@
+{
+  "reports": [
+    {
+      "id": "REP-001",
+      "name": "Anonymous",
+      "description": "Bribery demand at local RTO office for license renewal. Officer demanded ₹2000 for processing without queue.",
+      "location": "RTO Office, Andheri East, Mumbai",
+      "files": ["document1.pdf"],
+      "date": "2024-01-15",
+      "status": "new",
+      "comments": []
+    },
+    {
+      "id": "REP-002",
+      "name": "Raj Malhotra",
+      "description": "Public hospital staff asking for money for free government medicines. Multiple witnesses present.",
+      "location": "Civil Hospital, Sector 12, Chandigarh",
+      "files": ["photo1.jpg", "photo2.jpg"],
+      "date": "2024-01-14",
+      "status": "in_review",
+      "comments": ["Forwarded to local vigilance team"]
+    },
+    {
+      "id": "REP-003",
+      "name": "Anonymous",
+      "description": "MLA fund misappropriation in village development project. Work shown as complete but nothing done on ground.",
+      "location": "Rampur Village, Bareilly District, UP",
+      "files": [],
+      "date": "2024-01-13",
+      "status": "action_taken",
+      "comments": ["Investigation initiated", "Media coverage obtained"]
+    },
+    {
+      "id": "REP-004",
+      "name": "Sunita Devi",
+      "description": "Ration shop owner not providing full quota of subsidized grains. Selling in black market instead.",
+      "location": "Fair Price Shop #234, Jaipur",
+      "files": ["video1.mp4"],
+      "date": "2024-01-10",
+      "status": "closed",
+      "comments": ["Shop owner license revoked", "Case resolved successfully"]
+    }
+  ]
+}

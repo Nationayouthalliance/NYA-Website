@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, Users, Calendar, Rocket, ChevronRight } from 'lucide-react';
+import { MapPin, Users, Calendar, Rocket, Search } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Layout } from '@/components/Layout';
 import { AnimatedSection, StaggerContainer, StaggerItem, HoverScale } from '@/components/AnimatedElements';
+import { Input } from '@/components/ui/input';
 import chaptersData from '@/data/chapters.json';
 import indiaMap from '@/assets/india-map.png';
 
@@ -25,10 +26,28 @@ const statusConfig = {
 
 const ChaptersPage = () => {
   const [filter, setFilter] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState('');
 
-  const filteredChapters = filter === 'all' 
-    ? chaptersData 
-    : (chaptersData as Chapter[]).filter(c => c.status === filter);
+  const filteredChapters = useMemo(() => {
+    let chapters = chaptersData as Chapter[];
+    
+    // Apply status filter
+    if (filter !== 'all') {
+      chapters = chapters.filter(c => c.status === filter);
+    }
+    
+    // Apply search filter
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      chapters = chapters.filter(c =>
+        c.city.toLowerCase().includes(query) ||
+        c.state.toLowerCase().includes(query) ||
+        c.status.toLowerCase().includes(query)
+      );
+    }
+    
+    return chapters;
+  }, [filter, searchQuery]);
 
   return (
     <Layout>
@@ -79,10 +98,22 @@ const ChaptersPage = () => {
         </div>
       </section>
 
-      {/* Filters */}
-      <section className="py-8 bg-background border-b border-border sticky top-20 z-30 backdrop-blur-xl bg-background/90">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center gap-3 flex-wrap">
+      {/* Filters & Search */}
+      <section className="py-6 bg-background border-b border-border sticky top-20 z-30 backdrop-blur-xl bg-background/90">
+        <div className="container mx-auto px-4 space-y-4">
+          {/* Search Bar */}
+          <div className="max-w-md mx-auto relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
+            <Input
+              placeholder="Search by city, state, or status..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-12 rounded-full h-12 bg-muted border-0 focus-visible:ring-primary"
+            />
+          </div>
+          
+          {/* Status Filters */}
+          <div className="flex items-center justify-center gap-3 flex-wrap">
             <span className="text-sm font-medium text-muted-foreground">Filter:</span>
             {['all', 'active', 'growing', 'starting'].map((status) => (
               <button
@@ -104,8 +135,13 @@ const ChaptersPage = () => {
       {/* Chapters Grid */}
       <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
-          <StaggerContainer className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredChapters.map((chapter, index) => {
+          {filteredChapters.length === 0 ? (
+            <div className="text-center py-16">
+              <p className="text-muted-foreground text-lg">No chapters found matching your criteria</p>
+            </div>
+          ) : (
+            <StaggerContainer className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredChapters.map((chapter, index) => {
               const config = statusConfig[(chapter as Chapter).status];
               return (
                 <StaggerItem key={(chapter as Chapter).id}>
@@ -159,7 +195,8 @@ const ChaptersPage = () => {
                 </StaggerItem>
               );
             })}
-          </StaggerContainer>
+            </StaggerContainer>
+          )}
         </div>
       </section>
 

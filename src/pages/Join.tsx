@@ -1,18 +1,11 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Users, MapPin, GraduationCap, Rocket, ArrowRight, Check } from 'lucide-react';
+import { Users, MapPin, GraduationCap, Rocket, ArrowRight, Check, AlertCircle } from 'lucide-react';
 import { Layout } from '@/components/Layout';
 import { AnimatedSection, StaggerContainer, StaggerItem, HoverScale } from '@/components/AnimatedElements';
 
+// Only these three options - Join NYA is on a separate page
 const joinOptions = [
-  {
-    id: 'member',
-    icon: Users,
-    title: 'Join NYA',
-    description: 'Become a member and join the movement in your city.',
-    color: 'bg-primary',
-    benefits: ['Access to community', 'Training programs', 'Local events'],
-  },
   {
     id: 'team',
     icon: Rocket,
@@ -32,8 +25,8 @@ const joinOptions = [
   {
     id: 'ambassador',
     icon: GraduationCap,
-    title: 'Campus Ambassador',
-    description: 'Represent NYA at your college or university.',
+    title: ' Ambassador',
+    description: 'Represent NYA at your School, college or Oraganization.',
     color: 'bg-purple',
     benefits: ['Campus leadership', 'Exclusive perks', 'Network access'],
   },
@@ -55,14 +48,14 @@ const JoinPage = () => {
           <AnimatedSection className="text-center max-w-3xl mx-auto mb-16">
             <span className="font-handwritten text-4xl text-primary mb-4 block">Welcome aboard!</span>
             <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl text-foreground mb-6">
-              Join the Movement
+              Apply to NYA
             </h1>
             <p className="text-xl text-muted-foreground">
               Choose how you want to contribute. Every role matters.
             </p>
           </AnimatedSection>
 
-          <StaggerContainer className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+          <StaggerContainer className="grid sm:grid-cols-3 gap-6 mb-16">
             {joinOptions.map((option) => (
               <StaggerItem key={option.id}>
                 <HoverScale>
@@ -95,9 +88,25 @@ const JoinPage = () => {
           {selectedOption && (
             <AnimatedSection className="max-w-xl mx-auto">
               <form onSubmit={handleSubmit} className="p-8 rounded-3xl bg-card border border-border">
-                <h3 className="font-display text-2xl font-bold text-foreground mb-6">Apply Now</h3>
+                {/* Warning Component */}
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mb-6 p-4 rounded-2xl bg-primary/10 border border-primary/30 flex items-start gap-3"
+                >
+                  <AlertCircle className="text-primary shrink-0 mt-0.5" size={20} />
+                  <p className="text-sm text-foreground font-medium">
+                    Make sure you have already joined NYA as a Member on all platforms before applying here.
+                  </p>
+                </motion.div>
+
+                <h3 className="font-display text-2xl font-bold text-foreground mb-6">
+                  Apply for {joinOptions.find(o => o.id === selectedOption)?.title}
+                </h3>
                 <div className="space-y-4">
                   <input type="text" placeholder="Full Name" required className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-primary outline-none" />
+                  <input type="text" placeholder="Discord Username" required className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-primary outline-none" />
+                  <input type="text" placeholder="Instagram Username" required className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-primary outline-none" />
                   <input type="email" placeholder="Email" required className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-primary outline-none" />
                   <input type="text" placeholder="City" required className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-primary outline-none" />
                   <textarea placeholder="Why do you want to join?" rows={4} className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-primary outline-none resize-none" />

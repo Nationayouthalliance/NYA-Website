@@ -110,12 +110,16 @@ const Media = () => {
                         alt={photo.title}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                       />
+                      {/* Black transparent overlay on hover, faded to top */}
+                      <div className="absolute inset-0 pointer-events-none">
+                        <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      </div>
                       <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                       <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
                         <span className="inline-block px-3 py-1 rounded-full bg-purple text-white text-xs font-medium mb-2">
                           {photo.category}
                         </span>
-                        <p className="text-white font-medium">{photo.title}</p>
+                        <p className="text-black font-medium">{photo.title}</p>
                       </div>
                     </div>
                   </motion.div>

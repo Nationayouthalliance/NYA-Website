@@ -1,0 +1,70 @@
+{
+  "requests": [
+    {
+      "id": "req-001",
+      "type": "Join Team",
+      "name": "Amit Kumar",
+      "email": "amit.kumar@email.com",
+      "phone": "+91 98765 43210",
+      "city": "Delhi",
+      "interest": "I want to contribute to anti-corruption awareness campaigns",
+      "experience": "3 years of NGO volunteering",
+      "date": "2024-01-15",
+      "status": "pending",
+      "notes": []
+    },
+    {
+      "id": "req-002",
+      "type": "Start Chapter",
+      "name": "Meera Krishnan",
+      "email": "meera.k@email.com",
+      "phone": "+91 87654 32109",
+      "city": "Coimbatore",
+      "state": "Tamil Nadu",
+      "plan": "I plan to start with college awareness programs and connect with local youth groups",
+      "date": "2024-01-14",
+      "status": "pending",
+      "notes": []
+    },
+    {
+      "id": "req-003",
+      "type": "Campus Ambassador",
+      "name": "Rohan Mehta",
+      "email": "rohan.m@email.com",
+      "phone": "+91 76543 21098",
+      "college": "IIT Bombay",
+      "course": "B.Tech Computer Science",
+      "year": "3rd Year",
+      "why": "I believe in transparent governance and want to spread awareness among students",
+      "date": "2024-01-13",
+      "status": "approved",
+      "notes": ["Strong candidate with leadership experience"]
+    },
+    {
+      "id": "req-004",
+      "type": "Join Team",
+      "name": "Ananya Reddy",
+      "email": "ananya.r@email.com",
+      "phone": "+91 65432 10987",
+      "city": "Hyderabad",
+      "interest": "Social media management and content creation",
+      "experience": "Running a blog with 10k followers",
+      "date": "2024-01-12",
+      "status": "rejected",
+      "notes": ["Position already filled", "Suggested to try again next quarter"]
+    },
+    {
+      "id": "req-005",
+      "type": "Start Chapter",
+      "name": "Vikash Singh",
+      "email": "vikash.s@email.com",
+      "phone": "+91 54321 09876",
+      "city": "Patna",
+      "state": "Bihar",
+      "plan": "Connect with university students and organize monthly meetups",
+      "date": "2024-01-11",
+      "status": "pending",
+      "notes": []
+    }
+  ]
+}
