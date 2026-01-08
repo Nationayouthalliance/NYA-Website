@@ -58,7 +58,7 @@ export const Footer = () => {
           <div className="lg:col-span-2">
             <Link to="/" className="flex items-center gap-3 mb-6">
               <div className="w-14 h-14 rounded-2xl bg-gradient-hero flex items-center justify-center text-foreground font-display font-bold text-xl">
-                <img src="src/components/logo.png" alt="NYA Logo" />
+                <img src="/logo.png" alt="Logo">
               </div>
               <div>
                 <span className="font-display font-bold text-xl text-background">
