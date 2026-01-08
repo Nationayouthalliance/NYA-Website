@@ -64,7 +64,7 @@ export const Navbar = () => {
                 <span className={`font-display font-bold text-lg transition-colors duration-300 ${
                   showTransparent ? 'text-white' : 'text-foreground'
                 }`}>
-                  Youth Alliance
+                 National Youth Alliance
                 </span>
                 <span className={`block text-xs font-handwritten text-lg -mt-1 transition-colors duration-300 ${
                   showTransparent ? 'text-white/80' : 'text-muted-foreground'
