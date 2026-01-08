@@ -39,6 +39,7 @@ import ReportsManager from "./pages/admin/ReportsManager";
 import ActivityLogs from "./pages/admin/ActivityLogs";
 import AdminsManager from "./pages/admin/AdminsManager";
 import SettingsManager from "./pages/admin/SettingsManager";
+import { ScrollToTop } from "@/components/ScrollToTop";
 
 const queryClient = new QueryClient();
 
@@ -49,6 +50,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <ScrollToTop />
           <Routes>
             {/* Public Routes */}
             <Route path="/" element={<Index />} />
