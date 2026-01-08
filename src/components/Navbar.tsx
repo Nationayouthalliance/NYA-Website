@@ -58,7 +58,7 @@ export const Navbar = () => {
                 whileHover={{ rotate: 10, scale: 1.1 }}
                 className="w-12 h-12 rounded-2xl bg-gradient-hero flex items-center justify-center text-white font-display font-bold text-xl shadow-lg"
               >
-                <img src="/logo.png" alt="Logo">
+                <img src="/logo.png" alt="Logo" className="w-10 h-10 object-contain" />
               </motion.div>
               <div className="hidden sm:block">
                 <span className={`font-display font-bold text-lg transition-colors duration-300 ${

@@ -58,7 +58,9 @@ export const Footer = () => {
           <div className="lg:col-span-2">
             <Link to="/" className="flex items-center gap-3 mb-6">
               <div className="w-14 h-14 rounded-2xl bg-gradient-hero flex items-center justify-center text-foreground font-display font-bold text-xl">
-                <img src="/logo.png" alt="Logo">
+                <Link to="/" className="flex items-center gap-3 group">
+                  <img src="/logo.png" alt="Logo" className="w-10 h-10 object-contain" />
+                </Link>
               </div>
               <div>
                 <span className="font-display font-bold text-xl text-background">
