@@ -23,7 +23,7 @@ const platforms = [
     icon: Instagram,
     color: 'bg-gradient-to-br from-[#833AB4] via-[#FD1D1D] to-[#F77737]',
     available: true,
-    link: 'https://www.instagram.com/nationalyouthalliance.genz/',
+    link: 'https://www.instagram.com/j/AbYEeiQPRQfOWhyL/',
     buttonText: 'Join Instagram',
   },
   {
