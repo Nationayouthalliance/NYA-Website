@@ -226,7 +226,7 @@ SETUP INSTRUCTIONS
 
 OWNERSHIP AND AUTHORITY
 
-Project Owner: Nishit Kumar  
+Project Owner: Krazy Hacker
 Organization: National Youth Alliance
 
 All major changes require owner approval.
@@ -243,3 +243,4 @@ This project is:
 Do not experiment blindly. Do not guess. Ask first.
 
 END OF README
+
