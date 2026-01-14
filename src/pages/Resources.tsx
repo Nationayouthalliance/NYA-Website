@@ -1,18 +1,20 @@
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Search, ExternalLink, Download, FileText, Link as LinkIcon, BookOpen, Filter } from 'lucide-react';
 import { Layout } from '@/components/Layout';
 import { AnimatedSection, StaggerContainer, StaggerItem, HoverScale } from '@/components/AnimatedElements';
-import resourcesData from '@/data/resources.json';
+import { useEffect, useMemo, useState } from 'react';
+import { supabase } from '@/lib/supabase';
 
 interface Resource {
   id: string;
   title: string;
   description: string;
+  tags: string[];        
   category: string;
   type: 'guide' | 'link' | 'resource';
-  link: string;
+  link: string;          
 }
+
 
 const categories = [
   'All',
@@ -37,14 +39,62 @@ const typeColors = {
 
 const ResourcesPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeCategory, setActiveCategory] = useState('All');
+const [activeCategory, setActiveCategory] = useState('All');
+const [resources, setResources] = useState<Resource[]>([]);
+const [loading, setLoading] = useState(true);
+useEffect(() => {
+  const fetchResources = async () => {
+    const { data, error } = await supabase
+      .from('resources')
+      .select('*')
+      .order('created_at', { ascending: false });
 
-  const filteredResources = (resourcesData as Resource[]).filter((resource) => {
-    const matchesSearch = resource.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      resource.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = activeCategory === 'All' || resource.category === activeCategory;
-    return matchesSearch && matchesCategory;
-  });
+    if (error) {
+      console.error('Error fetching resources:', error);
+    } else {
+      const mapped = (data || []).map((item: any) => ({
+  id: item.id,
+  title: item.title,
+  description: item.description,
+  link: item.link,
+  tags: item.tags || [],                     
+  category: item.tags?.[0] || 'General',     
+  type: item.tags?.includes('Guides')
+    ? 'guide'
+    : item.tags?.includes('Legal help')
+    ? 'resource'
+    : 'link',
+}));
+
+
+      setResources(mapped);
+    }
+
+    setLoading(false);
+  };
+
+  fetchResources();
+}, []);
+
+
+  const filteredResources = useMemo(() => {
+  let list = [...resources];
+
+if (activeCategory !== 'All') {
+  list = list.filter(r => r.tags.includes(activeCategory));
+}
+
+
+  if (searchQuery.trim()) {
+    const q = searchQuery.toLowerCase();
+    list = list.filter(r =>
+      r.title.toLowerCase().includes(q) ||
+      r.description.toLowerCase().includes(q)
+    );
+  }
+
+  return list;
+}, [resources, activeCategory, searchQuery]);
 
   return (
     <Layout>
@@ -144,9 +194,17 @@ const ResourcesPage = () => {
                           {resource.description}
                         </p>
 
-                        <span className="inline-block px-3 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground">
-                          {resource.category}
-                        </span>
+                        <div className="flex flex-wrap gap-2">
+  {resource.tags.map((tag, idx) => (
+    <span
+      key={idx}
+      className="inline-block px-3 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground"
+    >
+      {tag}
+    </span>
+  ))}
+</div>
+
                       </motion.a>
                     </HoverScale>
                   </StaggerItem>

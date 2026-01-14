@@ -3,33 +3,11 @@ import { Link } from 'react-router-dom';
 import { Heart, Target, Network, Quote, ArrowRight, Calendar } from 'lucide-react';
 import { Layout } from '@/components/Layout';
 import { AnimatedSection, StaggerContainer, StaggerItem, FloatingElement } from '@/components/AnimatedElements';
-
+import { useEffect, useState } from 'react';
+import { supabase } from '@/lib/supabase';
 import community1 from '@/assets/community-1.jpg';
 import community2 from '@/assets/community-2.jpg';
 import community3 from '@/assets/community-3.jpg';
-
-const timeline = [
-  {
-    year: '2025 SEP',
-    title: 'The Spark',
-    description: 'A group of college students started questioning why youth voices were ignored. They decided to change that.',
-  },
-  {
-    year: '2025 NOV',
-    title: 'The Start',
-    description: 'We started community nationwide with various other interested people from various cities and state',
-  },
-  {
-    year: '2025 DEC',
-    title: 'First 100 ',
-    description: 'We reached over 100 Members in NYA with same vision from various cities and states with people in different fields',
-  },
-  {
-    year: '2026 JAN',
-    title: 'The Foundation',
-    description: 'We made the Foundation of NYA with different roles and work to reach and connect more people and grow community to at the end get people for nation wide movements The revolution continues.',
-  },
-];
 
 const values = [
   {
@@ -53,6 +31,29 @@ const values = [
 ];
 
 const AboutPage = () => {
+    const [timeline, setTimeline] = useState<
+    { year: string; title: string; description: string }[]
+  >([]);
+  useEffect(() => {
+    const fetchTimeline = async () => {
+      const { data, error } = await supabase
+        .from('journey_timeline')
+        .select('year, title, description')
+        .order('order_index', { ascending: true });
+
+      if (error) {
+        console.error('Error fetching journey timeline:', error);
+        return;
+      }
+
+      if (data) {
+        setTimeline(data);
+      }
+    };
+
+    fetchTimeline();
+  }, []);
+
   return (
     <Layout>
       {/* Hero Section */}
@@ -201,16 +202,15 @@ const AboutPage = () => {
               <AnimatedSection key={index} delay={index * 0.1}>
                 <div className="flex gap-6 mb-12 last:mb-0">
                   <div className="flex flex-col items-center">
-                    <div className="w-16 h-16 rounded-full bg-gradient-hero flex items-center justify-center text-white font-display font-bold shadow-lg">
-                      {item.year.slice(2)}
+                    <div className="w-5 h-5 rounded-full bg-gradient-hero flex ">
                     </div>
                     {index < timeline.length - 1 && (
                       <div className="w-0.5 flex-1 bg-gradient-to-b from-primary to-transparent mt-4" />
                     )}
                   </div>
-                  <div className="flex-1 pb-8">
-                    <span className="text-primary font-bold">{item.year}</span>
-                    <h3 className="font-display text-2xl font-bold text-foreground mb-2">
+                  <div className="flex-1 pb-12">
+                    <span className="text-primary text-2xl font-bold">{item.year}</span>
+                    <h3 className="font-display text-4xl font-bold text-foreground mb-2">
                       {item.title}
                     </h3>
                     <p className="text-muted-foreground text-lg">
@@ -287,16 +287,16 @@ const AboutPage = () => {
             <p className="text-xl text-white/80 mb-10">
               The movement needs you. Your city needs you. India needs you.
             </p>
-            <Link to="/join">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.98 }}
-                className="px-8 py-4 bg-white text-orange font-bold rounded-full text-lg shadow-lg inline-flex items-center gap-2"
-              >
-                Join the Movement
-                <ArrowRight size={20} />
-              </motion.button>
-            </Link>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
+  <Link
+    to="/join"
+    className="px-8 py-4 bg-white text-orange font-bold rounded-full text-lg shadow-lg inline-flex items-center gap-2"
+  >
+    Join the Movement
+    <ArrowRight size={20} />
+  </Link>
+</motion.div>
+
           </AnimatedSection>
         </div>
       </section>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,7 +13,7 @@ import {
   Plus, Edit2, Trash2, Save, X, Search, MapPin, Users as UsersIcon
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import chaptersData from '@/data/chapters.json';
+import { supabase } from '@/lib/supabase';
 
 interface Chapter {
   id: string;
@@ -27,90 +27,199 @@ interface Chapter {
 
 const statuses = ['Active', 'Growing', 'Starting'] as const;
 
-const capitalizeStatus = (s: string): 'Active' | 'Growing' | 'Starting' => {
-  const map: Record<string, 'Active' | 'Growing' | 'Starting'> = {
-    'active': 'Active',
-    'growing': 'Growing', 
-    'starting': 'Starting'
-  };
-  return map[s.toLowerCase()] || 'Starting';
+/* ===================== STATUS MAPPERS ===================== */
+const mapStatusToDb = (status: Chapter['status']) => {
+  switch (status) {
+    case 'Active': return 'active';
+    case 'Growing': return 'growing';
+    case 'Starting': return 'starting';
+    default: return 'starting';
+  }
 };
 
+const mapStatusFromDb = (status: string): Chapter['status'] => {
+  switch (status) {
+    case 'active': return 'Active';
+    case 'growing': return 'Growing';
+    case 'starting': return 'Starting';
+    default: return 'Starting';
+  }
+};
+/* ========================================================== */
+
 const ChaptersManager = () => {
-  const [chapters, setChapters] = useState<Chapter[]>(
-    chaptersData.map((c, i) => ({
-      id: c.id || `c-${i}`,
-      city: c.city,
-      state: c.state,
-      status: capitalizeStatus(c.status),
-      members: c.members,
-      founded: c.founded,
-      lead: c.lead || 'TBD',
-    }))
-  );
+  const [chapters, setChapters] = useState<Chapter[]>([]);
   const [search, setSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isAdding, setIsAdding] = useState(false);
-  const [formData, setFormData] = useState<{
-    city: string; state: string; status: 'Active' | 'Growing' | 'Starting'; members: number; founded: string; lead: string;
-  }>({
-    city: '', state: '', status: 'Starting', members: 0, founded: '', lead: ''
+  const [formData, setFormData] = useState<Chapter>({
+    id: '',
+    city: '',
+    state: '',
+    status: 'Starting',
+    members: 0,
+    founded: '',
+    lead: '',
   });
+
   const { toast } = useToast();
 
+  // ================= FETCH =================
+  useEffect(() => {
+    const fetchChapters = async () => {
+      const { data, error } = await supabase
+        .from('chapters')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Fetch failed:', error);
+        toast({ title: 'Failed to load chapters', variant: 'destructive' });
+        return;
+      }
+
+      const mapped: Chapter[] = (data || []).map((c: any) => ({
+        id: c.id,
+        city: c.city,
+        state: c.state,
+        status: mapStatusFromDb(c.status),
+        members: c.members,
+        founded: c.founded,
+        lead: c.lead,
+      }));
+
+      setChapters(mapped);
+    };
+
+    fetchChapters();
+  }, []);
+
+  // ================= FILTER =================
   const filteredChapters = chapters.filter(c => {
-    const matchesSearch = c.city.toLowerCase().includes(search.toLowerCase()) ||
+    const matchesSearch =
+      c.city.toLowerCase().includes(search.toLowerCase()) ||
       c.state.toLowerCase().includes(search.toLowerCase());
+
     const matchesStatus = filterStatus === 'all' || c.status === filterStatus;
     return matchesSearch && matchesStatus;
   });
 
-  const handleAdd = () => {
+  // ================= ADD =================
+  const handleAdd = async () => {
     if (!formData.city || !formData.state) {
       toast({ title: "City and state are required", variant: "destructive" });
       return;
     }
-    const newChapter: Chapter = {
-      id: `c-${Date.now()}`,
-      ...formData,
+
+    const payload = {
+      city: formData.city,
+      state: formData.state,
+      status: mapStatusToDb(formData.status),
+      members: formData.members,
+      founded: formData.founded,
+      lead: formData.lead,
     };
-    setChapters([...chapters, newChapter]);
-    setFormData({ city: '', state: '', status: 'Starting', members: 0, founded: '', lead: '' });
-    setIsAdding(false);
-    console.log('Added chapter:', newChapter);
+
+    const { data, error } = await supabase
+      .from('chapters')
+      .insert(payload)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Add failed:', error);
+      toast({ title: 'Add failed', description: error.message, variant: 'destructive' });
+      return;
+    }
+
+    const newChapter: Chapter = {
+      id: data.id,
+      city: data.city,
+      state: data.state,
+      status: mapStatusFromDb(data.status),
+      members: data.members,
+      founded: data.founded,
+      lead: data.lead,
+    };
+
+    setChapters(prev => [newChapter, ...prev]);
+    closeForm();
     toast({ title: "Chapter added! 🎉" });
   };
 
+  // ================= EDIT =================
   const handleEdit = (chapter: Chapter) => {
     setEditingId(chapter.id);
-    setFormData({
-      city: chapter.city,
-      state: chapter.state,
-      status: chapter.status,
-      members: chapter.members,
-      founded: chapter.founded,
-      lead: chapter.lead,
-    });
+    setIsAdding(false);
+    setFormData({ ...chapter });
   };
 
-  const handleUpdate = () => {
-    setChapters(chapters.map(c => 
-      c.id === editingId ? { ...c, ...formData } : c
-    ));
-    setEditingId(null);
-    setFormData({ city: '', state: '', status: 'Starting', members: 0, founded: '', lead: '' });
-    console.log('Updated chapter:', editingId);
+  const handleUpdate = async () => {
+    if (!editingId) return;
+
+    const payload = {
+      city: formData.city,
+      state: formData.state,
+      status: mapStatusToDb(formData.status),
+      members: formData.members,
+      founded: formData.founded,
+      lead: formData.lead,
+    };
+
+    const { error } = await supabase
+      .from('chapters')
+      .update(payload)
+      .eq('id', editingId);
+
+    if (error) {
+      console.error('Update failed:', error);
+      toast({ title: 'Update failed', description: error.message, variant: 'destructive' });
+      return;
+    }
+
+    setChapters(prev =>
+      prev.map(c =>
+        c.id === editingId ? { ...c, ...formData } : c
+      )
+    );
+
+    closeForm();
     toast({ title: "Chapter updated! ✨" });
   };
 
-  const handleDelete = (id: string) => {
-    setChapters(chapters.filter(c => c.id !== id));
-    console.log('Deleted chapter:', id);
-    toast({ title: "Chapter removed" });
+  // ================= DELETE =================
+  const handleDelete = async (id: string) => {
+    const { error } = await supabase
+      .from('chapters')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('Delete failed:', error);
+      toast({ title: 'Delete failed', description: error.message, variant: 'destructive' });
+      return;
+    }
+
+    setChapters(prev => prev.filter(c => c.id !== id));
+    toast({ title: "Chapter removed 🗑️" });
   };
 
-  const getStatusColor = (status: string) => {
+  const closeForm = () => {
+    setIsAdding(false);
+    setEditingId(null);
+    setFormData({
+      id: '',
+      city: '',
+      state: '',
+      status: 'Starting',
+      members: 0,
+      founded: '',
+      lead: '',
+    });
+  };
+
+  const getStatusColor = (status: Chapter['status']) => {
     switch (status) {
       case 'Active': return 'bg-green text-white';
       case 'Growing': return 'bg-orange text-white';
@@ -119,8 +228,11 @@ const ChaptersManager = () => {
     }
   };
 
+  // ================= UI =================
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative pointer-events-auto">
+
+      {/* HEADER */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -133,7 +245,8 @@ const ChaptersManager = () => {
           </p>
         </div>
         <Button
-          onClick={() => setIsAdding(true)}
+          type="button"
+          onClick={() => { setIsAdding(true); setEditingId(null); }}
           className="rounded-full bg-gradient-hero text-white"
         >
           <Plus size={18} />
@@ -141,7 +254,7 @@ const ChaptersManager = () => {
         </Button>
       </motion.div>
 
-      {/* Filters */}
+      {/* FILTERS */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -170,18 +283,19 @@ const ChaptersManager = () => {
         </Select>
       </motion.div>
 
-      {/* Add/Edit Form */}
+      {/* ADD / EDIT FORM */}
       <AnimatePresence>
         {(isAdding || editingId) && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="bg-card rounded-2xl border-2 border-primary p-6"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="bg-card rounded-2xl border-2 border-primary p-6 relative z-50 pointer-events-auto"
           >
             <h3 className="font-display text-lg font-bold mb-4">
               {isAdding ? 'Add New Chapter' : 'Edit Chapter'}
             </h3>
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <Input
                 placeholder="City"
@@ -197,7 +311,7 @@ const ChaptersManager = () => {
               />
               <Select 
                 value={formData.status} 
-                onValueChange={(v) => setFormData({ ...formData, status: v as typeof formData.status })}
+                onValueChange={(v) => setFormData({ ...formData, status: v as Chapter['status'] })}
               >
                 <SelectTrigger className="rounded-xl">
                   <SelectValue placeholder="Select status" />
@@ -212,7 +326,7 @@ const ChaptersManager = () => {
                 type="number"
                 placeholder="Members count"
                 value={formData.members}
-                onChange={(e) => setFormData({ ...formData, members: parseInt(e.target.value) || 0 })}
+                onChange={(e) => setFormData({ ...formData, members: Number(e.target.value) || 0 })}
                 className="rounded-xl"
               />
               <Input
@@ -228,16 +342,13 @@ const ChaptersManager = () => {
                 className="rounded-xl"
               />
             </div>
+
             <div className="flex gap-2 mt-4">
-              <Button onClick={isAdding ? handleAdd : handleUpdate} className="rounded-full">
+              <Button type="button" onClick={isAdding ? handleAdd : handleUpdate} className="rounded-full">
                 {isAdding ? <Plus size={16} /> : <Save size={16} />}
                 {isAdding ? 'Add' : 'Save'}
               </Button>
-              <Button 
-                onClick={() => { setIsAdding(false); setEditingId(null); }} 
-                variant="outline" 
-                className="rounded-full"
-              >
+              <Button type="button" onClick={closeForm} variant="outline" className="rounded-full">
                 <X size={16} /> Cancel
               </Button>
             </div>
@@ -245,34 +356,48 @@ const ChaptersManager = () => {
         )}
       </AnimatePresence>
 
-      {/* Chapters Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {/* GRID */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 relative z-10 pointer-events-auto">
         {filteredChapters.map((chapter, index) => (
           <motion.div
             key={chapter.id}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.03 }}
-            className="bg-card rounded-2xl border border-border p-5 hover:border-primary/30 transition-all group"
+            className="bg-card rounded-2xl border border-border p-5 hover:border-primary/30 transition-all group relative z-10 pointer-events-auto"
           >
             <div className="flex items-start justify-between mb-3">
               <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(chapter.status)}`}>
                 {chapter.status}
               </span>
               <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                <Button onClick={() => handleEdit(chapter)} size="icon" variant="ghost" className="h-8 w-8 rounded-lg">
+                <Button
+                  type="button"
+                  onClick={() => handleEdit(chapter)}
+                  size="icon"
+                  variant="ghost"
+                  className="h-8 w-8 rounded-lg"
+                >
                   <Edit2 size={14} />
                 </Button>
-                <Button onClick={() => handleDelete(chapter.id)} size="icon" variant="ghost" className="h-8 w-8 rounded-lg text-destructive">
+                <Button
+                  type="button"
+                  onClick={() => handleDelete(chapter.id)}
+                  size="icon"
+                  variant="ghost"
+                  className="h-8 w-8 rounded-lg text-destructive"
+                >
                   <Trash2 size={14} />
                 </Button>
               </div>
             </div>
+
             <h3 className="font-display font-bold text-xl flex items-center gap-2">
               <MapPin size={18} className="text-primary" />
               {chapter.city}
             </h3>
             <p className="text-muted-foreground text-sm">{chapter.state}</p>
+
             <div className="flex items-center gap-4 mt-4 pt-4 border-t border-border text-sm">
               <div className="flex items-center gap-1">
                 <UsersIcon size={14} className="text-muted-foreground" />
@@ -280,8 +405,9 @@ const ChaptersManager = () => {
                 <span className="text-muted-foreground">members</span>
               </div>
             </div>
+
             <div className="mt-2 text-xs text-muted-foreground">
-              Lead: {chapter.lead} · Founded: {chapter.founded}
+              Lead: {chapter.lead || 'TBD'} · Founded: {chapter.founded || '—'}
             </div>
           </motion.div>
         ))}

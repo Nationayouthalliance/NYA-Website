@@ -8,13 +8,8 @@ import heroImage from '@/assets/hero-image.jpg';
 import community1 from '@/assets/community-1.jpg';
 import community2 from '@/assets/community-2.jpg';
 import community3 from '@/assets/community-3.jpg';
-
-const stats = [
-  { label: 'Active Members', value: 150, suffix: '+', icon: Users },
-  { label: 'Chapters', value: 10, suffix: '', icon: MapPin },
-  { label: 'States Covered', value: 5, suffix: '', icon: Flag },
-  { label: 'Issues Resolved', value: 6, suffix: '+', icon: Shield },
-];
+import { useEffect, useState } from 'react';
+import { supabase } from '@/lib/supabase';
 
 const features = [
   {
@@ -44,6 +39,39 @@ const features = [
 ];
 
 const Index = () => {
+    const [stats, setStats] = useState([
+    { label: 'Active Members', value: 0, suffix: '+', icon: Users },
+    { label: 'Chapters', value: 0, suffix: '', icon: MapPin },
+    { label: 'States Covered', value: 0, suffix: '', icon: Flag },
+    { label: 'Issues Resolved', value: 0, suffix: '+', icon: Shield },
+  ]);
+  useEffect(() => {
+    const fetchStats = async () => {
+      const { data, error } = await supabase
+.from('home_stats')
+.select('*')
+.eq('id', '00000000-0000-0000-0000-000000000001')
+.single();
+
+
+      if (error) {
+        console.error('Error fetching home stats:', error);
+        return;
+      }
+
+      if (data) {
+        setStats([
+          { label: 'Active Members', value: data.active_members || 0, suffix: '+', icon: Users },
+          { label: 'Chapters', value: data.chapters || 0, suffix: '', icon: MapPin },
+          { label: 'States Covered', value: data.states_covered || 0, suffix: '', icon: Flag },
+          { label: 'Issues Resolved', value: data.issues_resolved || 0, suffix: '+', icon: Shield },
+        ]);
+      }
+    };
+
+    fetchStats();
+  }, []);
+
   return (
     <Layout>
       {/* Hero Section */}
@@ -239,7 +267,8 @@ const Index = () => {
           
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
             {stats.map((stat, index) => (
-              <AnimatedSection key={index} delay={index * 0.1}>
+  <AnimatedSection key={stat.label + stat.value} delay={index * 0.1}>
+
                 <HoverScale>
                   <div className="relative p-6 rounded-3xl bg-background/5 backdrop-blur border border-background/10 text-center group">
                     <div className="w-14 h-14 rounded-2xl bg-gradient-hero mx-auto mb-4 flex items-center justify-center">
@@ -256,7 +285,7 @@ const Index = () => {
           </div>
         </div>
       </section>
-
+         
       {/* Why NYA Exists Section */}
       <section className="py-24 bg-background relative">
         <div className="container mx-auto px-4">

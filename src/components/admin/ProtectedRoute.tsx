@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth, AdminPermissions } from '@/contexts/AuthContext';
-import { AccessDenied } from '@/pages/admin/AccessDenied';
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -9,24 +8,32 @@ interface ProtectedRouteProps {
   masterOnly?: boolean;
 }
 
-export const ProtectedRoute = ({ 
-  children, 
+export const ProtectedRoute = ({
+  children,
   requiredPermission,
-  masterOnly = false 
+  masterOnly = false,
 }: ProtectedRouteProps) => {
-  const { isAuthenticated, hasPermission, isMasterAdmin } = useAuth();
+  const { isAuthenticated, isLoading, hasPermission, isMasterAdmin } = useAuth();
   const location = useLocation();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-muted-foreground">
+        Checking authentication...
+      </div>
+    );
+  }
 
   if (!isAuthenticated) {
     return <Navigate to="/admin/login" state={{ from: location }} replace />;
   }
 
   if (masterOnly && !isMasterAdmin) {
-    return <AccessDenied />;
+    return <div>Access Denied</div>;
   }
 
   if (requiredPermission && !hasPermission(requiredPermission)) {
-    return <AccessDenied />;
+    return <div>Access Denied</div>;
   }
 
   return <>{children}</>;

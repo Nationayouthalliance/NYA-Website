@@ -1,16 +1,48 @@
-import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, X, ExternalLink, Headphones, Calendar, Image as ImageIcon, Video, Newspaper, Mic } from 'lucide-react';
 import { Layout } from '@/components/Layout';
 import { AnimatedSection, StaggerContainer, StaggerItem, HoverScale } from '@/components/AnimatedElements';
-import mediaData from '@/data/media.json';
+import { useEffect, useState } from 'react';
+import { supabase } from '@/lib/supabase';
+
 
 const categories = ['All', 'Photos', 'Videos', 'Press', 'Podcasts'];
 
 const Media = () => {
   const [activeCategory, setActiveCategory] = useState('All');
-  const [lightboxImage, setLightboxImage] = useState<string | null>(null);
-  const [activeVideo, setActiveVideo] = useState<string | null>(null);
+const [lightboxImage, setLightboxImage] = useState<string | null>(null);
+const [activeVideo, setActiveVideo] = useState<string | null>(null);
+
+const [photos, setPhotos] = useState<any[]>([]);
+const [videos, setVideos] = useState<any[]>([]);
+const [press, setPress] = useState<any[]>([]);
+const [podcasts, setPodcasts] = useState<any[]>([]);
+const [loading, setLoading] = useState(true);
+useEffect(() => {
+  const fetchMedia = async () => {
+    const [photosRes, videosRes, pressRes, podcastsRes] = await Promise.all([
+      supabase.from('media_photos').select('*').order('created_at', { ascending: false }),
+      supabase.from('media_videos').select('*').order('created_at', { ascending: false }),
+      supabase.from('media_press').select('*').order('created_at', { ascending: false }),
+      supabase.from('media_podcasts').select('*').order('created_at', { ascending: false }),
+    ]);
+
+    if (photosRes.error) console.error('Photos error:', photosRes.error);
+    if (videosRes.error) console.error('Videos error:', videosRes.error);
+    if (pressRes.error) console.error('Press error:', pressRes.error);
+    if (podcastsRes.error) console.error('Podcasts error:', podcastsRes.error);
+
+    setPhotos(photosRes.data || []);
+    setVideos(videosRes.data || []);
+    setPress(pressRes.data || []);
+    setPodcasts(podcastsRes.data || []);
+
+    setLoading(false);
+  };
+
+  fetchMedia();
+}, []);
+
 
   const getCategoryIcon = (cat: string) => {
     switch (cat) {
@@ -88,7 +120,7 @@ const Media = () => {
             </AnimatedSection>
 
             <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 space-y-4">
-              {mediaData.photos.map((photo, index) => {
+              {photos.map((photo, index) => {
                 const heights = ['h-64', 'h-80', 'h-72', 'h-96', 'h-56'];
                 const randomHeight = heights[index % heights.length];
                 
@@ -106,8 +138,8 @@ const Media = () => {
                       className={`relative ${randomHeight} rounded-2xl overflow-hidden cursor-pointer group bg-muted`}
                     >
                       <img
-                        src={photo.url}
-                        alt={photo.title}
+                        src={photo.image_url}
+                        alt={photo.title || 'NYA Photo'}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                       />
                       {/* Black transparent overlay on hover, faded to top */}
@@ -117,7 +149,7 @@ const Media = () => {
                       <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                       <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
                         <span className="inline-block px-3 py-1 rounded-full bg-purple text-white text-xs font-medium mb-2">
-                          {photo.category}
+                          {photo.tag}
                         </span>
                         <p className="text-black font-medium">{photo.title}</p>
                       </div>
@@ -145,16 +177,30 @@ const Media = () => {
             </AnimatedSection>
 
             <StaggerContainer className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {mediaData.videos.map((video) => (
+              {videos.map((video) => (
                 <StaggerItem key={video.id}>
                   <HoverScale>
                     <div className="bg-card rounded-3xl overflow-hidden border border-border shadow-sm">
                       <div 
                         className="relative aspect-video bg-muted cursor-pointer group"
-                        onClick={() => setActiveVideo(video.embedUrl)}
+                        onClick={() => {
+  const url = video.video_link;
+  let embedUrl = url;
+
+  if (url.includes('watch?v=')) {
+    const id = url.split('watch?v=')[1].split('&')[0];
+    embedUrl = `https://www.youtube.com/embed/${id}?autoplay=1`;
+  } else if (url.includes('youtu.be/')) {
+    const id = url.split('youtu.be/')[1].split('?')[0];
+    embedUrl = `https://www.youtube.com/embed/${id}?autoplay=1`;
+  }
+
+  setActiveVideo(embedUrl);
+}}
+
                       >
                         <img
-                          src={video.thumbnail}
+                          src={video.thumbnail_url}
                           alt={video.title}
                           className="w-full h-full object-cover"
                         />
@@ -196,32 +242,39 @@ const Media = () => {
             </AnimatedSection>
 
             <StaggerContainer className="grid gap-4 max-w-4xl">
-              {mediaData.pressReleases.map((press) => (
-                <StaggerItem key={press.id}>
+              {press.map((item) => (
+                <StaggerItem key={item.id}>
                   <HoverScale>
-                    <div className="p-6 rounded-2xl bg-card border border-border hover:border-orange/50 transition-colors group cursor-pointer">
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-                            <Calendar size={14} />
-                            {new Date(press.date).toLocaleDateString('en-IN', {
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric'
-                            })}
+                    <a
+                      href={item.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block"
+                    >
+                      <div className="p-6 rounded-2xl bg-card border border-border hover:border-orange/50 transition-colors group cursor-pointer">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+                              <Calendar size={14} />
+                              {new Date(item.date_text).toLocaleDateString('en-IN', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                              })}
+                            </div>
+                            <h3 className="font-display text-xl text-foreground font-bold mb-2 group-hover:text-orange transition-colors">
+                              {item.title}
+                            </h3>
+                            <p className="text-muted-foreground">{item.summary}</p>
                           </div>
-                          <h3 className="font-display text-xl text-foreground font-bold mb-2 group-hover:text-orange transition-colors">
-                            {press.title}
-                          </h3>
-                          <p className="text-muted-foreground">{press.summary}</p>
-                        </div>
-                        <div className="shrink-0">
-                          <div className="w-10 h-10 rounded-full bg-orange/10 flex items-center justify-center group-hover:bg-orange group-hover:text-white transition-colors">
-                            <ExternalLink size={18} />
+                          <div className="shrink-0">
+                            <div className="w-10 h-10 rounded-full bg-orange/10 flex items-center justify-center group-hover:bg-orange group-hover:text-white transition-colors">
+                              <ExternalLink size={18} />
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </a>
                   </HoverScale>
                 </StaggerItem>
               ))}
@@ -245,32 +298,37 @@ const Media = () => {
             </AnimatedSection>
 
             <StaggerContainer className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {mediaData.podcasts.map((podcast) => (
-                <StaggerItem key={podcast.id}>
-                  <HoverScale>
-                    <div className="p-6 rounded-3xl bg-gradient-to-br from-accent/10 to-purple/10 border border-accent/20 hover:border-accent/50 transition-colors group cursor-pointer">
-                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-r from-accent to-purple flex items-center justify-center mb-4 shadow-lg">
-                        <Headphones className="text-white" size={28} />
-                      </div>
-                      <h3 className="font-display text-xl text-foreground font-bold mb-3">
-                        {podcast.title}
-                      </h3>
-                      <div className="flex items-center justify-between text-sm text-muted-foreground">
-                        <span className="flex items-center gap-1">
-                          <Calendar size={14} />
-                          {new Date(podcast.date).toLocaleDateString('en-IN', {
-                            month: 'short',
-                            day: 'numeric'
-                          })}
-                        </span>
-                        <span className="px-3 py-1 rounded-full bg-accent/20 text-accent font-medium">
-                          {podcast.duration}
-                        </span>
-                      </div>
-                    </div>
-                  </HoverScale>
-                </StaggerItem>
-              ))}
+              {podcasts.map((podcast) => (
+  <StaggerItem key={podcast.id}>
+    <HoverScale>
+      <a
+        href={podcast.link}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block"
+      >
+        <div className="p-6 rounded-3xl bg-gradient-to-br from-accent/10 to-purple/10 border border-accent/20 hover:border-accent/50 transition-colors group cursor-pointer">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-r from-accent to-purple flex items-center justify-center mb-4 shadow-lg">
+            <Headphones className="text-white" size={28} />
+          </div>
+          <h3 className="font-display text-xl text-foreground font-bold mb-3">
+            {podcast.title}
+          </h3>
+          <div className="flex items-center justify-between text-sm text-muted-foreground">
+            <span className="flex items-center gap-1">
+              <Calendar size={14} />
+              {podcast.date_text}
+            </span>
+            <span className="px-3 py-1 rounded-full bg-accent/20 text-accent font-medium">
+              {podcast.duration}
+            </span>
+          </div>
+        </div>
+      </a>
+    </HoverScale>
+  </StaggerItem>
+))}
+
             </StaggerContainer>
           </div>
         </section>

@@ -1,25 +1,79 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Save, Loader2, TrendingUp, Users, MapPin, CheckCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import siteSettings from '@/data/siteSettings.json';
+import { supabase } from '@/lib/supabase';
+
+const HOME_STATS_ID = '00000000-0000-0000-0000-000000000001';
 
 const HomeManager = () => {
-  const [stats, setStats] = useState(siteSettings.stats);
+  const [stats, setStats] = useState({
+    activeMembers: 0,
+    chapters: 0,
+    statesCovered: 0,
+    issuesResolved: 0,
+  });
+
   const [saving, setSaving] = useState(false);
   const { toast } = useToast();
 
+  // 🔹 FETCH STATS
+  useEffect(() => {
+    const fetchStats = async () => {
+      const { data, error } = await supabase
+        .from('home_stats')
+        .select('*')
+        .eq('id', HOME_STATS_ID)
+        .single();
+
+      if (error) {
+        console.error('Failed to fetch home stats:', error);
+        return;
+      }
+
+      setStats({
+        activeMembers: data.active_members,
+        chapters: data.chapters,
+        statesCovered: data.states_covered,
+        issuesResolved: data.issues_resolved,
+      });
+    };
+
+    fetchStats();
+  }, []);
+
+  // 🔹 SAVE STATS
   const handleSave = async () => {
     setSaving(true);
-    // Simulate save
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    console.log('Saving home stats:', stats);
+
+    const { error } = await supabase
+      .from('home_stats')
+      .update({
+        active_members: stats.activeMembers,
+        chapters: stats.chapters,
+        states_covered: stats.statesCovered,
+        issues_resolved: stats.issuesResolved,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', HOME_STATS_ID);
+
     setSaving(false);
+
+    if (error) {
+      console.error('Failed to update stats:', error);
+      toast({
+        title: 'Update failed ❌',
+        description: error.message,
+        variant: 'destructive',
+      });
+      return;
+    }
+
     toast({
-      title: "Stats Updated! 🎉",
-      description: "Homepage counters have been updated successfully.",
+      title: 'Stats Updated! 🎉',
+      description: 'Homepage counters have been updated successfully.',
     });
   };
 
@@ -32,10 +86,7 @@ const HomeManager = () => {
 
   return (
     <div className="space-y-6">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
         <h1 className="font-display text-3xl font-bold">Home Manager</h1>
         <p className="text-muted-foreground mt-1">
           Update the statistics displayed on the homepage
@@ -49,7 +100,7 @@ const HomeManager = () => {
         className="bg-card rounded-2xl border border-border p-6"
       >
         <h2 className="font-display text-xl font-bold mb-6">Homepage Statistics</h2>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {statFields.map(({ key, label, icon: Icon, color }, index) => (
             <motion.div
@@ -68,7 +119,9 @@ const HomeManager = () => {
               <Input
                 type="number"
                 value={stats[key as keyof typeof stats]}
-                onChange={(e) => setStats({ ...stats, [key]: parseInt(e.target.value) || 0 })}
+                onChange={(e) =>
+                  setStats({ ...stats, [key]: parseInt(e.target.value) || 0 })
+                }
                 className="h-12 rounded-xl text-lg font-semibold"
               />
             </motion.div>
@@ -86,9 +139,7 @@ const HomeManager = () => {
             disabled={saving}
             className="rounded-full bg-gradient-hero text-white px-8"
           >
-            {saving ? (
-              <Loader2 className="animate-spin" size={18} />
-            ) : (
+            {saving ? <Loader2 className="animate-spin" size={18} /> : (
               <>
                 <Save size={18} />
                 Save Changes

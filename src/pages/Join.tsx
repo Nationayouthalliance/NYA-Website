@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import { Users, MapPin, GraduationCap, Rocket, ArrowRight, Check, AlertCircle } from 'lucide-react';
 import { Layout } from '@/components/Layout';
 import { AnimatedSection, StaggerContainer, StaggerItem, HoverScale } from '@/components/AnimatedElements';
+import { supabase } from '@/lib/supabase';
+
 
 // Only these three options - Join NYA is on a separate page
 const joinOptions = [
@@ -33,13 +35,52 @@ const joinOptions = [
 ];
 
 const JoinPage = () => {
+  const [loading, setLoading] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Form submitted for:', selectedOption);
-    alert('Application submitted! We\'ll get back to you soon.');
-  };
+
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  if (!selectedOption) return;
+
+  const form = e.currentTarget;
+  const formData = new FormData(form);
+
+  const name = formData.get('name') as string;
+  const email = formData.get('email') as string;
+  const city = formData.get('city') as string;
+  const reason = formData.get('reason') as string;
+  const discord = formData.get('discord') as string;
+  const instagram = formData.get('instagram') as string;
+
+  setLoading(true);
+
+  const { error } = await supabase.from('join_requests').insert({
+    type: selectedOption,
+    name,
+    email,
+    city,
+    reason,
+    discord_username: discord,
+    instagram_username: instagram,
+    status: 'pending',
+  });
+
+  setLoading(false);
+
+  if (error) {
+    console.error(error);
+    alert('Failed to submit application. Please try again.');
+  } else {
+    alert('Application submitted successfully!');
+    form.reset();
+    setSelectedOption(null);
+  }
+};
+
+
+
 
   return (
     <Layout>
@@ -104,15 +145,22 @@ const JoinPage = () => {
                   Apply for {joinOptions.find(o => o.id === selectedOption)?.title}
                 </h3>
                 <div className="space-y-4">
-                  <input type="text" placeholder="Full Name" required className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-primary outline-none" />
-                  <input type="text" placeholder="Discord Username" required className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-primary outline-none" />
-                  <input type="text" placeholder="Instagram Username" required className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-primary outline-none" />
-                  <input type="email" placeholder="Email" required className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-primary outline-none" />
-                  <input type="text" placeholder="City" required className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-primary outline-none" />
-                  <textarea placeholder="Why do you want to join?" rows={4} className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-primary outline-none resize-none" />
-                  <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} type="submit" className="w-full btn-hero">
-                    Submit Application <ArrowRight size={20} />
-                  </motion.button>
+                  <input name="name" type="text" placeholder="Full Name" required className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-primary outline-none" />
+                  <input name="discord" type="text" placeholder="Discord Username" required className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-primary outline-none" />
+                  <input name="instagram" type="text" placeholder="Instagram Username" required className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-primary outline-none" />
+                  <input name="email" type="email" placeholder="Email" required className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-primary outline-none" />
+                  <input name="city" type="text" placeholder="City" required className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-primary outline-none" />
+                  <textarea name="reason" placeholder="Why do you want to join?" rows={4} className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-primary outline-none resize-none" />
+                  <motion.button
+  whileHover={{ scale: 1.02 }}
+  whileTap={{ scale: 0.98 }}
+  type="submit"
+  disabled={loading}
+  className="w-full btn-hero disabled:opacity-60"
+>
+  {loading ? 'Submitting...' : <>Submit Application <ArrowRight size={20} /></>}
+</motion.button>
+
                 </div>
               </form>
             </AnimatedSection>

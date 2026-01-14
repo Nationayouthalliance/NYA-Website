@@ -1,61 +1,30 @@
 import { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Shield, Loader2, Home } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { supabase } from '@/lib/supabase';
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
   const from = (location.state as { from?: { pathname: string } })?.from?.pathname || '/admin';
 
-  // Demo emails for testing
-  const demoEmails = [
-    { email: 'master@nya.org', label: 'Master Admin', color: 'bg-primary' },
-    { email: 'priya@nya.org', label: 'Sub Admin', color: 'bg-orange' },
-    { email: 'rahul@nya.org', label: 'Content Admin', color: 'bg-accent' },
-    { email: 'sneha@nya.org', label: 'Chapter Admin', color: 'bg-purple' },
-  ];
-
-  const handleGoogleSignIn = async (email?: string) => {
-    setIsLoading(true);
-    
-    // In production, this would trigger Google OAuth
-    // For demo, we simulate Google returning an email
-    const simulatedEmail = email || 'test@example.com';
-    
-    const result = await login(simulatedEmail);
-    setIsLoading(false);
-    
-    if (result.success) {
-      navigate(from, { replace: true });
-    } else {
-      // Redirect to access denied
-      navigate('/admin/access-denied');
+const handleGoogleSignIn = async () => {
+  await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: window.location.origin + '/admin'
     }
-  };
+  });
+};
+
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted flex items-center justify-center p-4">
-      {/* Background decoration */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 50, repeat: Infinity, ease: 'linear' }}
-          className="absolute -top-40 -right-40 w-80 h-80 bg-primary/5 rounded-full blur-3xl"
-        />
-        <motion.div
-          animate={{ rotate: -360 }}
-          transition={{ duration: 60, repeat: Infinity, ease: 'linear' }}
-          className="absolute -bottom-40 -left-40 w-80 h-80 bg-accent/5 rounded-full blur-3xl"
-        />
-      </div>
-
       <motion.div
         initial={{ opacity: 0, y: 20, scale: 0.95 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -73,16 +42,11 @@ const Login = () => {
 
         <div className="bg-card rounded-3xl shadow-2xl border border-border p-8">
           {/* Logo */}
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
-            className="flex justify-center mb-6"
-          >
+          <div className="flex justify-center mb-6">
             <div className="w-16 h-16 rounded-2xl bg-gradient-hero flex items-center justify-center text-white shadow-lg">
               <Shield size={32} />
             </div>
-          </motion.div>
+          </div>
 
           <h1 className="font-display text-2xl font-bold text-center mb-2">
             Admin Login
@@ -93,7 +57,7 @@ const Login = () => {
 
           {/* Google Sign In Button */}
           <Button
-            onClick={() => handleGoogleSignIn()}
+            onClick={handleGoogleSignIn}
             disabled={isLoading}
             className="w-full h-12 rounded-xl bg-white hover:bg-gray-50 text-gray-800 font-semibold border border-gray-200 shadow-sm"
           >
@@ -121,27 +85,6 @@ const Login = () => {
             )}
             Sign in with Google
           </Button>
-
-          {/* Demo accounts */}
-          <div className="mt-8 pt-6 border-t border-border">
-            <p className="text-xs text-muted-foreground text-center mb-4">
-              Demo accounts for testing (click to login):
-            </p>
-            <div className="grid grid-cols-2 gap-2">
-              {demoEmails.map(({ email, label, color }) => (
-                <motion.button
-                  key={email}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => handleGoogleSignIn(email)}
-                  disabled={isLoading}
-                  className={`text-xs px-3 py-2.5 rounded-xl ${color} text-white font-medium transition-all hover:opacity-90 disabled:opacity-50`}
-                >
-                  {label}
-                </motion.button>
-              ))}
-            </div>
-          </div>
         </div>
 
         <p className="text-center text-xs text-muted-foreground mt-6">

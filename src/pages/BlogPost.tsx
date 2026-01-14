@@ -3,14 +3,77 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Calendar, Clock, User, Share2, Twitter, Linkedin, Link as LinkIcon, ArrowRight } from 'lucide-react';
 import { Layout } from '@/components/Layout';
 import { AnimatedSection } from '@/components/AnimatedElements';
-import blogData from '@/data/blog.json';
+import { useEffect, useState } from 'react';
+import { supabase } from '@/lib/supabase';
+import ReactMarkdown from 'react-markdown';
+
+
+
 
 const BlogPost = () => {
-  const { id } = useParams();
+  const { slug } = useParams<{ slug: string }>();
+
   const navigate = useNavigate();
-  
-  const post = blogData.find(p => p.id === id);
-  const otherPosts = blogData.filter(p => p.id !== id).slice(0, 3);
+const [post, setPost] = useState<any>(null);
+const [otherPosts, setOtherPosts] = useState<any[]>([]);
+const [loading, setLoading] = useState(true);
+useEffect(() => {
+  if (!slug) return;
+
+  const fetchPost = async () => {
+  const { data, error } = await supabase
+    .from('blog_posts')
+    .select(`
+  id,
+  title,
+  slug,
+  excerpt,
+  cover_image,
+  tag,
+  status,
+  featured,
+  created_at,
+  author_admin_id,
+  author:author_admin_id (
+    id,
+    name,
+    email
+  )
+`)
+
+    .eq('slug', slug)
+    .single();
+
+  if (error) {
+    console.error('Error fetching post:', error);
+    setPost(null);
+  } else {
+    setPost(data);
+  }
+
+  setLoading(false);
+};
+
+
+  fetchPost();
+}, [slug]);
+useEffect(() => {
+  if (!post?.id) return;
+
+  const fetchOthers = async () => {
+    const { data, error } = await supabase
+      .from('blog_posts')
+      .select('*')
+      .neq('id', post.id)
+      .limit(3);
+
+    if (!error && data) {
+      setOtherPosts(data);
+    }
+  };
+
+  fetchOthers();
+}, [post?.id]);
 
   if (!post) {
     return (
@@ -65,7 +128,7 @@ const BlogPost = () => {
 
             {/* Category badge */}
             <span className="inline-block px-4 py-2 rounded-full bg-primary/20 text-primary text-sm font-medium mb-6">
-              {post.category}
+              {post.tag}
             </span>
 
             {/* Title */}
@@ -80,7 +143,11 @@ const BlogPost = () => {
                   <User size={20} className="text-muted-foreground" />
                 </div>
                 <div>
-                  <p className="font-medium text-foreground">{post.author}</p>
+                  <p className="font-medium text-foreground">
+  {post.author?.name
+ || 'NYA Team'}
+</p>
+
                   <p className="text-sm">Contributor</p>
                 </div>
               </div>
@@ -96,7 +163,7 @@ const BlogPost = () => {
               </div>
               <div className="flex items-center gap-2">
                 <Clock size={18} />
-                <span>{post.readTime} read</span>
+                <span>10 Min read</span>
               </div>
             </div>
           </AnimatedSection>
@@ -108,7 +175,11 @@ const BlogPost = () => {
         <div className="container mx-auto px-4">
           <AnimatedSection className="max-w-4xl mx-auto">
             <div className="aspect-[21/9] rounded-3xl bg-gradient-to-br from-primary/30 via-accent/20 to-orange/30 overflow-hidden shadow-2xl flex items-center justify-center">
-              <span className="font-handwritten text-8xl text-white/30">{post.category}</span>
+              <img
+      src={post.cover_image}
+      alt={post.title}
+      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+    />
             </div>
           </AnimatedSection>
         </div>
@@ -156,8 +227,11 @@ const BlogPost = () => {
                   {post.excerpt}
                 </p>
                 
-                <div className="text-foreground leading-relaxed space-y-6">
-                  <p>{post.content}</p>
+                <div className="prose prose-lg dark:prose-invert max-w-none">
+  <ReactMarkdown>
+    {post.content}
+  </ReactMarkdown>
+
                   
                   {/* Mock additional content */}
                   <h2 className="font-display text-2xl text-foreground mt-12 mb-4">The Power of Youth</h2>
@@ -236,14 +310,21 @@ const BlogPost = () => {
             <AnimatedSection className="mt-16 p-8 rounded-3xl bg-gradient-to-br from-primary/10 to-accent/10 border border-primary/20">
               <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center">
                 <div className="w-20 h-20 rounded-2xl bg-gradient-hero flex items-center justify-center text-white text-2xl font-display font-bold shrink-0">
-                  {post.author.split(' ').map(n => n[0]).join('')}
+                  {post.author?.name
+  ? post.author.name.split(' ').map(n => n[0]).join('')
+  : 'NYA'
+}
+
                 </div>
                 <div className="flex-1">
                   <p className="text-sm text-primary font-medium mb-1">Written by</p>
-                  <h3 className="font-display text-xl text-foreground font-bold mb-2">{post.author}</h3>
+                  <h3 className="font-display text-xl text-foreground font-bold mb-2">
+  {post.author?.name
+ || 'NYA Team'}
+</h3>
+
                   <p className="text-muted-foreground">
-                    A passionate advocate for youth rights and civic engagement. 
-                    Contributing to NYA's mission of building a more transparent India.
+                    A passionate Blog Writter
                   </p>
                 </div>
               </div>
@@ -262,17 +343,18 @@ const BlogPost = () => {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {otherPosts.map((relatedPost, index) => (
               <AnimatedSection key={relatedPost.id} delay={index * 0.1}>
-                <Link to={`/blog/${relatedPost.id}`}>
+                <Link to={`/blog/${relatedPost.slug}`}>
+
                   <motion.article
                     whileHover={{ y: -5 }}
                     className="h-full bg-card rounded-2xl border border-border overflow-hidden group"
                   >
                     <div className="aspect-[16/10] bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-                      <span className="font-handwritten text-4xl text-primary/30">{relatedPost.category.charAt(0)}</span>
+                      <span className="font-handwritten text-4xl text-primary/30">{relatedPost.tag?.charAt(0) || '?'}</span>
                     </div>
                     <div className="p-5">
                       <span className="inline-block px-2 py-0.5 rounded-full bg-muted text-xs font-medium text-muted-foreground mb-2">
-                        {relatedPost.category}
+                        {relatedPost.tag || '?'}
                       </span>
                       <h3 className="font-display text-lg text-foreground font-bold group-hover:text-primary transition-colors line-clamp-2">
                         {relatedPost.title}

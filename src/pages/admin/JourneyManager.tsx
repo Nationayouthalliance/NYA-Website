@@ -1,82 +1,172 @@
-import { useState } from 'react';
-import { motion, Reorder } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { motion, Reorder, useDragControls } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { 
-  Plus, Edit2, Trash2, Save, X, GripVertical, Loader2
-} from 'lucide-react';
+import { Plus, Edit2, Trash2, Save, X, GripVertical } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import journeyData from '@/data/journey.json';
+import { supabase } from '@/lib/supabase';
 
 interface TimelineItem {
   id: string;
   year: string;
   title: string;
   description: string;
-  order: number;
+  order_index: number;
 }
 
 const JourneyManager = () => {
-  const [items, setItems] = useState<TimelineItem[]>(journeyData.timeline);
+  const [items, setItems] = useState<TimelineItem[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isAdding, setIsAdding] = useState(false);
-  const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState({ year: '', title: '', description: '' });
   const { toast } = useToast();
+  const dragControls = useDragControls();
 
-  const handleAdd = () => {
+  // ================= FETCH =================
+  useEffect(() => {
+    const fetchTimeline = async () => {
+      const { data, error } = await supabase
+        .from('journey_timeline')
+        .select('*')
+        .order('order_index', { ascending: true });
+
+      if (error) {
+        console.error('Failed to fetch timeline:', error);
+        toast({ title: 'Failed to load timeline', variant: 'destructive' });
+        return;
+      }
+
+      setItems(data || []);
+    };
+
+    fetchTimeline();
+  }, []);
+
+  // ================= ADD =================
+  const handleAdd = async () => {
     if (!formData.year || !formData.title || !formData.description) {
-      toast({ title: "Please fill all fields", variant: "destructive" });
+      toast({ title: 'Please fill all fields', variant: 'destructive' });
       return;
     }
-    const newItem: TimelineItem = {
-      id: `j-${Date.now()}`,
-      ...formData,
-      order: items.length + 1,
-    };
-    setItems([...items, newItem]);
+
+    const { data, error } = await supabase
+      .from('journey_timeline')
+      .insert({
+        year: formData.year,
+        title: formData.title,
+        description: formData.description,
+        order_index: items.length + 1,
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Insert failed:', error);
+      toast({ title: 'Add failed', description: error.message, variant: 'destructive' });
+      return;
+    }
+
+    setItems(prev => [...prev, data]);
     setFormData({ year: '', title: '', description: '' });
     setIsAdding(false);
-    console.log('Added journey item:', newItem);
-    toast({ title: "Timeline entry added! 🎉" });
+
+    toast({ title: 'Timeline entry added 🎉' });
   };
 
+  // ================= EDIT =================
   const handleEdit = (item: TimelineItem) => {
     setEditingId(item.id);
-    setFormData({ year: item.year, title: item.title, description: item.description });
+    setFormData({
+      year: item.year,
+      title: item.title,
+      description: item.description,
+    });
   };
 
-  const handleUpdate = () => {
-    setItems(items.map(item => 
-      item.id === editingId 
-        ? { ...item, ...formData } 
-        : item
-    ));
+  const handleUpdate = async () => {
+    if (!editingId) return;
+
+    const { error } = await supabase
+      .from('journey_timeline')
+      .update({
+        year: formData.year,
+        title: formData.title,
+        description: formData.description,
+      })
+      .eq('id', editingId);
+
+    if (error) {
+      console.error('Update failed:', error);
+      toast({ title: 'Update failed', description: error.message, variant: 'destructive' });
+      return;
+    }
+
+    setItems(prev =>
+      prev.map(item =>
+        item.id === editingId ? { ...item, ...formData } : item
+      )
+    );
+
     setEditingId(null);
     setFormData({ year: '', title: '', description: '' });
-    console.log('Updated journey item:', editingId);
-    toast({ title: "Timeline entry updated! ✨" });
+
+    toast({ title: 'Timeline entry updated ✨' });
   };
 
-  const handleDelete = (id: string) => {
-    setItems(items.filter(item => item.id !== id));
-    console.log('Deleted journey item:', id);
-    toast({ title: "Timeline entry deleted" });
+  // ================= DELETE =================
+  const handleDelete = async (id: string) => {
+    const { error } = await supabase
+      .from('journey_timeline')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('Delete failed:', error);
+      toast({ title: 'Delete failed', description: error.message, variant: 'destructive' });
+      return;
+    }
+
+    const remaining = items.filter(item => item.id !== id);
+    const reordered = remaining.map((item, index) => ({
+      ...item,
+      order_index: index + 1,
+    }));
+
+    setItems(reordered);
+
+    // update order_index safely
+    for (const row of reordered) {
+      await supabase
+        .from('journey_timeline')
+        .update({ order_index: row.order_index })
+        .eq('id', row.id);
+    }
+
+    toast({ title: 'Timeline entry deleted 🗑️' });
   };
 
-  const handleReorder = (newOrder: TimelineItem[]) => {
-    setItems(newOrder.map((item, index) => ({ ...item, order: index + 1 })));
+  // ================= REORDER =================
+  const handleReorder = async (newOrder: TimelineItem[]) => {
+    setItems(newOrder);
+
+    for (let i = 0; i < newOrder.length; i++) {
+      const item = newOrder[i];
+
+      const { error } = await supabase
+        .from('journey_timeline')
+        .update({ order_index: i + 1 })
+        .eq('id', item.id);
+
+      if (error) {
+        console.error('Order save failed:', error);
+        toast({ title: 'Order save failed', description: error.message, variant: 'destructive' });
+        return;
+      }
+    }
   };
 
-  const handleSaveOrder = async () => {
-    setSaving(true);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    console.log('Saved journey order:', items);
-    setSaving(false);
-    toast({ title: "Order saved! 🎯" });
-  };
-
+  // ================= UI =================
   return (
     <div className="space-y-6">
       <motion.div
@@ -90,27 +180,16 @@ const JourneyManager = () => {
             Manage the About page timeline. Drag to reorder entries.
           </p>
         </div>
-        <div className="flex gap-2">
-          <Button
-            onClick={() => setIsAdding(true)}
-            className="rounded-full bg-gradient-hero text-white"
-          >
-            <Plus size={18} />
-            Add Entry
-          </Button>
-          <Button
-            onClick={handleSaveOrder}
-            disabled={saving}
-            variant="outline"
-            className="rounded-full"
-          >
-            {saving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
-            Save Order
-          </Button>
-        </div>
+        <Button
+          onClick={() => setIsAdding(true)}
+          className="rounded-full bg-gradient-hero text-white"
+        >
+          <Plus size={18} />
+          Add Entry
+        </Button>
       </motion.div>
 
-      {/* Add Form */}
+      {/* ADD FORM */}
       {isAdding && (
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -120,7 +199,7 @@ const JourneyManager = () => {
           <h3 className="font-display text-lg font-bold mb-4">Add New Entry</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input
-              placeholder="Year (e.g., 2024)"
+              placeholder="Month + Year (e.g., Jan 2024)"
               value={formData.year}
               onChange={(e) => setFormData({ ...formData, year: e.target.value })}
               className="rounded-xl"
@@ -150,15 +229,25 @@ const JourneyManager = () => {
         </motion.div>
       )}
 
-      {/* Timeline List */}
-      <Reorder.Group axis="y" values={items} onReorder={handleReorder} className="space-y-3">
-        {items.sort((a, b) => a.order - b.order).map((item, index) => (
-          <Reorder.Item key={item.id} value={item}>
+      {/* TIMELINE */}
+      <Reorder.Group
+        axis="y"
+        values={items}
+        onReorder={handleReorder}
+        className="space-y-3"
+      >
+        {items.map((item, index) => (
+          <Reorder.Item
+            key={item.id}
+            value={item}
+            dragListener={false}
+            dragControls={dragControls}
+          >
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: index * 0.05 }}
-              className="bg-card rounded-2xl border border-border p-4 hover:border-primary/30 transition-all cursor-grab active:cursor-grabbing"
+              className="bg-card rounded-2xl border border-border p-4 hover:border-primary/30 transition-all"
             >
               {editingId === item.id ? (
                 <div className="space-y-3">
@@ -191,7 +280,10 @@ const JourneyManager = () => {
                 </div>
               ) : (
                 <div className="flex items-start gap-4">
-                  <div className="text-muted-foreground cursor-grab">
+                  <div
+                    className="text-muted-foreground cursor-grab"
+                    onPointerDown={(e) => dragControls.start(e)}
+                  >
                     <GripVertical size={20} />
                   </div>
                   <div className="w-16 h-16 rounded-xl bg-gradient-hero text-white flex items-center justify-center font-display font-bold text-lg">

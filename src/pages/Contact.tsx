@@ -2,13 +2,46 @@ import { motion } from 'framer-motion';
 import { Mail, MapPin, Phone, Send } from 'lucide-react';
 import { Layout } from '@/components/Layout';
 import { AnimatedSection } from '@/components/AnimatedElements';
+import { supabase } from '@/lib/supabase';
+import { useState } from 'react';
+
 
 const ContactPage = () => {
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Contact form submitted');
-    alert('Message sent! We\'ll get back to you soon.');
-  };
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  setLoading(true);
+
+  const form = e.currentTarget;
+  const formData = new FormData(form);
+
+  const name = formData.get('name') as string;
+  const email = formData.get('email') as string;
+  const subject = formData.get('subject') as string;
+  const message = formData.get('message') as string;
+
+  const { error } = await supabase.from('contact_messages').insert([
+    {
+      name,
+      email,
+      subject,
+      message,
+      user_agent: navigator.userAgent,
+    }
+  ]);
+
+  setLoading(false);
+
+  if (error) {
+    console.error('Contact form error:', error);
+    alert('Something went wrong. Please try again.');
+  } else {
+    alert('Message sent! We will get back to you soon.');
+    form.reset();
+  }
+};
+
 
   return (
     <Layout>
@@ -24,13 +57,20 @@ const ContactPage = () => {
             <AnimatedSection direction="left">
               <form onSubmit={handleSubmit} className="p-8 rounded-3xl bg-card border border-border">
                 <div className="space-y-4">
-                  <input type="text" placeholder="Your Name" required className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-primary outline-none" />
-                  <input type="email" placeholder="Your Email" required className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-primary outline-none" />
-                  <input type="text" placeholder="Subject" className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-primary outline-none" />
-                  <textarea placeholder="Your Message" rows={6} required className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-primary outline-none resize-none" />
-                  <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} type="submit" className="w-full btn-hero">
-                    Send Message <Send size={18} />
-                  </motion.button>
+                  <input name="name" type="text" placeholder="Your Name" required className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-primary outline-none" />
+                  <input name="email" type="email" placeholder="Your Email" required className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-primary outline-none" />
+                  <input name="subject" type="text" placeholder="Subject" className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-primary outline-none" />
+                  <textarea name="message" placeholder="Your Message" rows={6} required className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-primary outline-none resize-none" />
+                  <motion.button
+  whileHover={{ scale: 1.02 }}
+  whileTap={{ scale: 0.98 }}
+  type="submit"
+  disabled={loading}
+  className="w-full btn-hero disabled:opacity-60 disabled:cursor-not-allowed"
+>
+  {loading ? 'Sending...' : <>Send Message <Send size={18} /></>}
+</motion.button>
+
                 </div>
               </form>
             </AnimatedSection>

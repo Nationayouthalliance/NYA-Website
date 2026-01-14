@@ -60,15 +60,16 @@ const App = () => (
             <Route path="/resources" element={<Resources />} />
             <Route path="/media" element={<Media />} />
             <Route path="/blog" element={<Blog />} />
-            <Route path="/blog/:id" element={<BlogPost />} />
+            <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/join" element={<Join />} />
             <Route path="/join-nya" element={<JoinNYA />} />
             <Route path="/report" element={<Report />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/503" element={<Maintenance />} />
+            
           
-            {/* Admin Routes - temporarily inaccessible */}
-            {/**
+            {/* Admin Routes */}
+            {/* 
             <Route path="/admin/login" element={<Login />} />
             <Route path="/admin/access-denied" element={<AccessDenied />} />
             <Route path="/admin" element={<ProtectedRoute><AdminLayout><Dashboard /></AdminLayout></ProtectedRoute>} />
@@ -85,8 +86,7 @@ const App = () => (
             <Route path="/admin/admins" element={<ProtectedRoute requiredPermission="admins"><AdminLayout><AdminsManager /></AdminLayout></ProtectedRoute>} />
             <Route path="/admin/settings" element={<ProtectedRoute requiredPermission="settings"><AdminLayout><SettingsManager /></AdminLayout></ProtectedRoute>} />
             */}
-          
-            {/* 404 */}
+            {/* 404 */} 
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

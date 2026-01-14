@@ -4,7 +4,9 @@ import { X, Sparkles, Star, Search } from 'lucide-react';
 import { Layout } from '@/components/Layout';
 import { AnimatedSection, StaggerContainer, StaggerItem, HoverScale } from '@/components/AnimatedElements';
 import { Input } from '@/components/ui/input';
-import teamData from '@/data/team.json';
+import { useEffect } from 'react';
+import { supabase } from '@/lib/supabase';
+
 
 interface TeamMember {
   id: string;
@@ -30,17 +32,47 @@ const wingColors: Record<string, string> = {
 const TeamPage = () => {
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+const [loading, setLoading] = useState(true);
+useEffect(() => {
+  const fetchTeam = async () => {
+    const { data, error } = await supabase
+      .from('team_members')
+      .select('id, name, wing, role, city, about, contribution');
 
-  const filteredTeam = useMemo(() => {
-    if (!searchQuery.trim()) return teamData as TeamMember[];
-    const query = searchQuery.toLowerCase();
-    return (teamData as TeamMember[]).filter(member =>
-      member.name.toLowerCase().includes(query) ||
-      member.role.toLowerCase().includes(query) ||
-      member.wing.toLowerCase().includes(query) ||
-      member.chapter.toLowerCase().includes(query)
-    );
-  }, [searchQuery]);
+    if (error) {
+      console.error('Error fetching team members:', error);
+    } else {
+      setTeamMembers(
+        data.map((m) => ({
+          id: m.id,
+          name: m.name,
+          wing: m.wing,
+          role: m.role,
+          chapter: m.city,
+          bio: m.about,
+          whatTheyDo: m.contribution,
+        }))
+      );
+    }
+    setLoading(false);
+  };
+
+  fetchTeam();
+}, []);
+
+
+const filteredTeam = useMemo(() => {
+  if (!searchQuery.trim()) return teamMembers;
+  const query = searchQuery.toLowerCase();
+  return teamMembers.filter(member =>
+    member.name.toLowerCase().includes(query) ||
+    member.role.toLowerCase().includes(query) ||
+    member.wing.toLowerCase().includes(query) ||
+    member.chapter.toLowerCase().includes(query)
+  );
+}, [searchQuery, teamMembers]);
+
 
   return (
     <Layout>

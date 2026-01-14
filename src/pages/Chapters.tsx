@@ -5,8 +5,10 @@ import { Link } from 'react-router-dom';
 import { Layout } from '@/components/Layout';
 import { AnimatedSection, StaggerContainer, StaggerItem, HoverScale } from '@/components/AnimatedElements';
 import { Input } from '@/components/ui/input';
-import chaptersData from '@/data/chapters.json';
-import indiaMap from '@/assets/india-map.png';
+import { supabase } from '@/lib/supabase';
+import { useEffect } from 'react';
+
+
 
 interface Chapter {
   id: string;
@@ -26,28 +28,49 @@ const statusConfig = {
 
 const ChaptersPage = () => {
   const [filter, setFilter] = useState<string>('all');
-  const [searchQuery, setSearchQuery] = useState('');
+const [searchQuery, setSearchQuery] = useState('');
+const [chapters, setChapters] = useState<Chapter[]>([]);
+const [loading, setLoading] = useState(true);
 
-  const filteredChapters = useMemo(() => {
-    let chapters = chaptersData as Chapter[];
-    
-    // Apply status filter
-    if (filter !== 'all') {
-      chapters = chapters.filter(c => c.status === filter);
+useEffect(() => {
+  const fetchChapters = async () => {
+    const { data, error } = await supabase
+      .from('chapters')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching chapters:', error);
+    } else {
+      setChapters(data as Chapter[]);
     }
-    
-    // Apply search filter
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
-      chapters = chapters.filter(c =>
-        c.city.toLowerCase().includes(query) ||
-        c.state.toLowerCase().includes(query) ||
-        c.status.toLowerCase().includes(query)
-      );
-    }
-    
-    return chapters;
-  }, [filter, searchQuery]);
+
+    setLoading(false);
+  };
+
+  fetchChapters();
+}, []);
+
+
+const filteredChapters = useMemo(() => {
+  let list = [...chapters];
+
+  if (filter !== 'all') {
+    list = list.filter(c => c.status === filter);
+  }
+
+  if (searchQuery.trim()) {
+    const query = searchQuery.toLowerCase();
+    list = list.filter(c =>
+      c.city.toLowerCase().includes(query) ||
+      c.state.toLowerCase().includes(query) ||
+      c.status.toLowerCase().includes(query)
+    );
+  }
+
+  return list;
+}, [filter, searchQuery, chapters]);
+
 
   return (
     <Layout>

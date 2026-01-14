@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,10 +11,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { 
-  Plus, Edit2, Trash2, Save, X, Search, Users, Loader2
+  Plus, Edit2, Trash2, Save, X, Search, Users
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import teamData from '@/data/team.json';
+import { supabase } from '@/lib/supabase';
 
 interface TeamMember {
   id: string;
@@ -26,82 +26,148 @@ interface TeamMember {
   contribution: string;
 }
 
-const wings = ['Core Team', 'Strategy', 'Operations', 'Media', 'Outreach', 'Tech'];
-const roles = ['National Coordinator', 'State Lead', 'Chapter Head', 'Coordinator', 'Member', 'Advisor'];
+const wings = [
+  'Strategy and Analysis',
+  'Training and Management',
+  'Technical and Resources',
+  'Outreach and Recruitment',
+  'Content and Design',
+];
+
+const wingColors: Record<string, string> = {
+  'Strategy and Analysis': 'bg-primary',
+  'Training and Management': 'bg-orange',
+  'Technical and Resources': 'bg-accent',
+  'Outreach and Recruitment': 'bg-purple',
+  'Content and Design': 'bg-green',
+};
 
 const TeamManager = () => {
-  const [members, setMembers] = useState<TeamMember[]>(
-    teamData.map((m, i) => ({
-      id: m.id || `t-${i}`,
-      name: m.name,
-      role: m.role,
-      wing: m.wing,
-      city: m.chapter,
-      about: m.bio,
-      contribution: m.whatTheyDo,
-    }))
-  );
+  const [members, setMembers] = useState<TeamMember[]>([]);
   const [search, setSearch] = useState('');
   const [filterWing, setFilterWing] = useState('all');
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isAdding, setIsAdding] = useState(false);
-  const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState({
     name: '', role: '', wing: '', city: '', about: '', contribution: ''
   });
   const { toast } = useToast();
 
+  // ================= FETCH =================
+  useEffect(() => {
+    const fetchMembers = async () => {
+      const { data, error } = await supabase
+        .from('team_members')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Fetch failed:', error);
+        toast({ title: 'Failed to load team', variant: 'destructive' });
+        return;
+      }
+
+      setMembers(data || []);
+    };
+
+    fetchMembers();
+  }, []);
+
+  // ================= FILTER =================
   const filteredMembers = members.filter(m => {
-    const matchesSearch = m.name.toLowerCase().includes(search.toLowerCase()) ||
+    const matchesSearch =
+      m.name.toLowerCase().includes(search.toLowerCase()) ||
       m.role.toLowerCase().includes(search.toLowerCase());
+
     const matchesWing = filterWing === 'all' || m.wing === filterWing;
     return matchesSearch && matchesWing;
   });
 
-  const handleAdd = () => {
-    if (!formData.name || !formData.role) {
-      toast({ title: "Name and role are required", variant: "destructive" });
+  // ================= ADD =================
+  const handleAdd = async () => {
+    if (!formData.name || !formData.role || !formData.wing) {
+      toast({ title: "Name, role and wing are required", variant: "destructive" });
       return;
     }
-    const newMember: TeamMember = {
-      id: `t-${Date.now()}`,
-      ...formData,
-    };
-    setMembers([...members, newMember]);
-    setFormData({ name: '', role: '', wing: '', city: '', about: '', contribution: '' });
-    setIsAdding(false);
-    console.log('Added team member:', newMember);
+
+    const { data, error } = await supabase
+      .from('team_members')
+      .insert(formData)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Add failed:', error);
+      toast({ title: 'Add failed', description: error.message, variant: 'destructive' });
+      return;
+    }
+
+    setMembers(prev => [data, ...prev]);
+    closeForm();
+
     toast({ title: "Team member added! 🎉" });
   };
 
+  // ================= EDIT =================
   const handleEdit = (member: TeamMember) => {
     setEditingId(member.id);
+    setIsAdding(false);
     setFormData({
-      name: member.name,
-      role: member.role,
-      wing: member.wing,
-      city: member.city,
-      about: member.about,
-      contribution: member.contribution,
+      name: member.name || '',
+      role: member.role || '',
+      wing: member.wing || '',
+      city: member.city || '',
+      about: member.about || '',
+      contribution: member.contribution || '',
     });
   };
 
-  const handleUpdate = () => {
-    setMembers(members.map(m => 
-      m.id === editingId ? { ...m, ...formData } : m
-    ));
-    setEditingId(null);
-    setFormData({ name: '', role: '', wing: '', city: '', about: '', contribution: '' });
-    console.log('Updated team member:', editingId);
+  const handleUpdate = async () => {
+    if (!editingId) return;
+
+    const { error } = await supabase
+      .from('team_members')
+      .update(formData)
+      .eq('id', editingId);
+
+    if (error) {
+      console.error('Update failed:', error);
+      toast({ title: 'Update failed', description: error.message, variant: 'destructive' });
+      return;
+    }
+
+    setMembers(prev =>
+      prev.map(m => m.id === editingId ? { ...m, ...formData } : m)
+    );
+
+    closeForm();
     toast({ title: "Team member updated! ✨" });
   };
 
-  const handleDelete = (id: string) => {
-    setMembers(members.filter(m => m.id !== id));
-    console.log('Deleted team member:', id);
-    toast({ title: "Team member removed" });
+  // ================= DELETE =================
+  const handleDelete = async (id: string) => {
+    const { error } = await supabase
+      .from('team_members')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('Delete failed:', error);
+      toast({ title: 'Delete failed', description: error.message, variant: 'destructive' });
+      return;
+    }
+
+    setMembers(prev => prev.filter(m => m.id !== id));
+    toast({ title: "Team member removed 🗑️" });
   };
 
+  const closeForm = () => {
+    setIsAdding(false);
+    setEditingId(null);
+    setFormData({ name: '', role: '', wing: '', city: '', about: '', contribution: '' });
+  };
+
+  // ================= UI =================
   return (
     <div className="space-y-6">
       <motion.div
@@ -116,7 +182,7 @@ const TeamManager = () => {
           </p>
         </div>
         <Button
-          onClick={() => setIsAdding(true)}
+          onClick={() => { setIsAdding(true); setEditingId(null); }}
           className="rounded-full bg-gradient-hero text-white"
         >
           <Plus size={18} />
@@ -157,14 +223,15 @@ const TeamManager = () => {
       <AnimatePresence>
         {(isAdding || editingId) && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="bg-card rounded-2xl border-2 border-primary p-6"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="bg-card rounded-2xl border-2 border-primary p-6 pointer-events-auto"
           >
             <h3 className="font-display text-lg font-bold mb-4">
               {isAdding ? 'Add New Member' : 'Edit Member'}
             </h3>
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <Input
                 placeholder="Name"
@@ -172,17 +239,20 @@ const TeamManager = () => {
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 className="rounded-xl"
               />
-              <Select value={formData.role} onValueChange={(v) => setFormData({ ...formData, role: v })}>
-                <SelectTrigger className="rounded-xl">
-                  <SelectValue placeholder="Select role" />
-                </SelectTrigger>
-                <SelectContent>
-                  {roles.map(role => (
-                    <SelectItem key={role} value={role}>{role}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Select value={formData.wing} onValueChange={(v) => setFormData({ ...formData, wing: v })}>
+
+              {/* ROLE – TEXT INPUT (as you wanted) */}
+              <Input
+                placeholder="Role (write manually)"
+                value={formData.role}
+                onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                className="rounded-xl"
+              />
+
+              {/* WING – DROPDOWN with your new wings */}
+              <Select
+                value={formData.wing}
+                onValueChange={(v) => setFormData({ ...formData, wing: v })}
+              >
                 <SelectTrigger className="rounded-xl">
                   <SelectValue placeholder="Select wing" />
                 </SelectTrigger>
@@ -192,6 +262,7 @@ const TeamManager = () => {
                   ))}
                 </SelectContent>
               </Select>
+
               <Input
                 placeholder="City"
                 value={formData.city}
@@ -199,6 +270,7 @@ const TeamManager = () => {
                 className="rounded-xl"
               />
             </div>
+
             <Textarea
               placeholder="About"
               value={formData.about}
@@ -213,16 +285,13 @@ const TeamManager = () => {
               className="mt-4 rounded-xl"
               rows={2}
             />
+
             <div className="flex gap-2 mt-4">
               <Button onClick={isAdding ? handleAdd : handleUpdate} className="rounded-full">
                 {isAdding ? <Plus size={16} /> : <Save size={16} />}
                 {isAdding ? 'Add' : 'Save'}
               </Button>
-              <Button 
-                onClick={() => { setIsAdding(false); setEditingId(null); }} 
-                variant="outline" 
-                className="rounded-full"
-              >
+              <Button onClick={closeForm} variant="outline" className="rounded-full">
                 <X size={16} /> Cancel
               </Button>
             </div>
@@ -256,8 +325,12 @@ const TeamManager = () => {
             <h3 className="font-display font-bold text-lg">{member.name}</h3>
             <p className="text-primary text-sm font-medium">{member.role}</p>
             <div className="flex flex-wrap gap-2 mt-2">
-              <span className="px-2 py-0.5 bg-muted rounded-full text-xs text-muted-foreground">{member.wing}</span>
-              <span className="px-2 py-0.5 bg-muted rounded-full text-xs text-muted-foreground">{member.city}</span>
+              <span className={`px-2 py-0.5 rounded-full text-xs text-white ${wingColors[member.wing] || 'bg-muted text-muted-foreground'}`}>
+                {member.wing}
+              </span>
+              <span className="px-2 py-0.5 bg-muted rounded-full text-xs text-muted-foreground">
+                {member.city}
+              </span>
             </div>
           </motion.div>
         ))}

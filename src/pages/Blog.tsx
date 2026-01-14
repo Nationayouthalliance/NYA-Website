@@ -4,20 +4,62 @@ import { motion } from 'framer-motion';
 import { Calendar, Clock, ArrowRight, Sparkles, Search, User } from 'lucide-react';
 import { Layout } from '@/components/Layout';
 import { AnimatedSection, StaggerContainer, StaggerItem, HoverScale } from '@/components/AnimatedElements';
-import blogData from '@/data/blog.json';
+import { supabase } from '@/lib/supabase';
+import { useEffect } from 'react';
+
 
 const categories = ['All', 'Success Stories', 'Opinion', 'Movement', 'How-To'];
 
 const Blog = () => {
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
+const [posts, setPosts] = useState<any[]>([]);
+const [loading, setLoading] = useState(true);
+useEffect(() => {
+  const fetchBlogs = async () => {
+const { data, error } = await supabase
+  .from('blog_posts')
+ .select(`
+  id,
+  title,
+  slug,
+  excerpt,
+  cover_image,
+  tag,
+  status,
+  featured,
+  created_at,
+  author_admin_id,
+  author:author_admin_id (
+    id,
+    name,
+    email
+  )
+`)
 
-  const featuredPosts = blogData.filter(post => post.featured);
-  
-  const filteredPosts = blogData.filter(post => {
-    const matchesCategory = activeCategory === 'All' || post.category === activeCategory;
+  .order('created_at', { ascending: false });
+    
+
+    if (error) {
+      console.error('Error fetching blogs:', error);
+    } else {
+      setPosts(data || []);
+    }
+
+    setLoading(false);
+  };
+
+  fetchBlogs();
+}, []);
+
+const featuredPosts = posts.filter(post => post.featured);
+
+
+ const filteredPosts = posts.filter(post => {
+  const matchesCategory = activeCategory === 'All' || post.tag === activeCategory;
     const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         post.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
+                         (post.excerpt || '').toLowerCase()
+.includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
 
@@ -94,16 +136,16 @@ const Blog = () => {
             <div className="grid lg:grid-cols-2 gap-6">
               {featuredPosts.map((post, index) => (
                 <AnimatedSection key={post.id} delay={index * 0.1}>
-                  <Link to={`/blog/${post.id}`}>
+                  <Link to={`/blog/${post.slug}`}>
                     <HoverScale>
                       <div className="h-full p-8 rounded-3xl bg-gradient-to-br from-primary/10 via-orange/5 to-accent/10 border border-primary/20 hover:border-primary/40 transition-colors group">
                         <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
                           <span className="px-3 py-1 rounded-full bg-primary/20 text-primary font-medium">
-                            {post.category}
+                            {post.tag}
                           </span>
                           <span className="flex items-center gap-1">
                             <Clock size={14} />
-                            {post.readTime}
+                            {post.read_time}
                           </span>
                         </div>
                         <h3 className="font-display text-2xl sm:text-3xl text-foreground font-bold mb-4 group-hover:text-primary transition-colors">
@@ -117,7 +159,7 @@ const Blog = () => {
                             <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
                               <User size={16} className="text-muted-foreground" />
                             </div>
-                            <span className="font-medium text-foreground">{post.author}</span>
+                            <span className="font-medium text-foreground">{post.author?.name || 'NYA Team'}</span>
                           </div>
                           <span className="text-primary font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
                             Read <ArrowRight size={16} />
@@ -149,22 +191,33 @@ const Blog = () => {
             <StaggerContainer className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredPosts.map((post) => (
                 <StaggerItem key={post.id}>
-                  <Link to={`/blog/${post.id}`}>
+                  <Link to={`/blog/${post.slug}`}>
                     <HoverScale>
                       <article className="h-full bg-card rounded-3xl border border-border overflow-hidden group">
-                        <div className="aspect-[16/9] bg-gradient-to-br from-primary/20 to-accent/20 relative overflow-hidden">
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <span className="font-handwritten text-6xl text-primary/30">{post.category.charAt(0)}</span>
-                          </div>
-                        </div>
+                        <div className="aspect-[16/9] relative overflow-hidden bg-muted">
+  {post.cover_image ? (
+    <img
+      src={post.cover_image}
+      alt={post.title}
+      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+    />
+  ) : (
+    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-accent/20">
+      <span className="font-handwritten text-6xl text-primary/30">
+        {post.tag?.charAt(0) || 'N'}
+      </span>
+    </div>
+  )}
+</div>
+
                         <div className="p-6">
                           <div className="flex items-center gap-3 text-sm text-muted-foreground mb-3">
                             <span className="px-2 py-0.5 rounded-full bg-muted text-xs font-medium">
-                              {post.category}
+                              {post.tag}
                             </span>
                             <span className="flex items-center gap-1">
                               <Clock size={12} />
-                              {post.readTime}
+                              {post.read_time}
                             </span>
                           </div>
                           <h3 className="font-display text-xl text-foreground font-bold mb-3 group-hover:text-primary transition-colors line-clamp-2">
@@ -178,12 +231,12 @@ const Blog = () => {
                               <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center">
                                 <User size={12} className="text-muted-foreground" />
                               </div>
-                              <span className="text-muted-foreground">{post.author}</span>
+                              <span className="text-muted-foreground">{post.author?.name || 'NYA Team'}</span>
                             </div>
                             <span className="flex items-center gap-1">
                               <Calendar size={12} className="text-muted-foreground" />
                               <span className="text-xs text-muted-foreground">
-                                {new Date(post.date).toLocaleDateString('en-IN', {
+                                {new Date(post.created_at).toLocaleDateString('en-IN', {
                                   month: 'short',
                                   day: 'numeric'
                                 })}
