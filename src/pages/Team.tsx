@@ -19,14 +19,11 @@ interface TeamMember {
 }
 
 const wingColors: Record<string, string> = {
-  'Strategy and Analysis': 'bg-primary',
+ 'Strategy and Analysis': 'bg-primary',
   'Training and Management': 'bg-orange',
   'Technical and Resources': 'bg-accent',
-  'Outreach': 'bg-purple',
-  'Legal Aid': 'bg-green',
-  'Campus': 'bg-yellow text-foreground',
-  'Media': 'bg-teal',
-  'Research': 'bg-primary',
+  'Outreach and Recruitment': 'bg-purple',
+  'Content and Design': 'bg-green',
 };
 
 const TeamPage = () => {
