@@ -155,7 +155,7 @@ useEffect(() => {
               <div className="flex items-center gap-2">
                 <Calendar size={18} />
                 <span>
-                  {new Date(post.date).toLocaleDateString('en-IN', {
+                  {new Date(post.created_at).toLocaleDateString('en-IN', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric'
