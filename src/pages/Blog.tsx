@@ -26,6 +26,7 @@ const { data, error } = await supabase
   excerpt,
   cover_image,
   tag,
+  content,
   status,
   featured,
   created_at,
