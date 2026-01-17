@@ -31,6 +31,7 @@ useEffect(() => {
   cover_image,
   tag,
   status,
+  content,
   featured,
   created_at,
   author_admin_id,
