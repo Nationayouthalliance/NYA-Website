@@ -69,7 +69,7 @@ const App = () => (
             
           
             {/* Admin Routes */}
-            {/* 
+            
             <Route path="/admin/login" element={<Login />} />
             <Route path="/admin/access-denied" element={<AccessDenied />} />
             <Route path="/admin" element={<ProtectedRoute><AdminLayout><Dashboard /></AdminLayout></ProtectedRoute>} />
@@ -85,7 +85,7 @@ const App = () => (
             <Route path="/admin/logs" element={<ProtectedRoute requiredPermission="logs"><AdminLayout><ActivityLogs /></AdminLayout></ProtectedRoute>} />
             <Route path="/admin/admins" element={<ProtectedRoute requiredPermission="admins"><AdminLayout><AdminsManager /></AdminLayout></ProtectedRoute>} />
             <Route path="/admin/settings" element={<ProtectedRoute requiredPermission="settings"><AdminLayout><SettingsManager /></AdminLayout></ProtectedRoute>} />
-            */}
+          
             {/* 404 */} 
             <Route path="*" element={<NotFound />} />
           </Routes>
