@@ -79,7 +79,7 @@ const ContactPage = () => {
               <div className="p-6 rounded-2xl bg-card border border-border">
                 <Mail className="text-primary mb-3" size={28} />
                 <h3 className="font-display text-xl font-bold text-foreground mb-1">Email</h3>
-                <p className="text-muted-foreground">hello@nyaindia.org</p>
+                <p className="text-muted-foreground">support@nyagenz.in</p>
               </div>
               <div className="p-6 rounded-2xl bg-card border border-border">
                 <MapPin className="text-accent mb-3" size={28} />
