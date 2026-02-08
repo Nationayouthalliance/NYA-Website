@@ -133,7 +133,7 @@ useEffect(() => {
             </span>
 
             {/* Title */}
-            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl text-foreground mb-6 leading-tight">
+            <h1 itemProp="headline" className="font-display text-4xl sm:text-5xl lg:text-6xl text-foreground mb-6 leading-tight">
               {post.title}
             </h1>
 
@@ -188,6 +188,10 @@ useEffect(() => {
 
       {/* Article Content */}
       <section className="py-16 bg-background">
+        <article
+    itemScope
+    itemType="https://schema.org/BlogPosting"
+  >
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto">
             {/* Share buttons - floating */}
@@ -332,6 +336,7 @@ useEffect(() => {
             </AnimatedSection>
           </div>
         </div>
+          </article>
       </section>
 
       {/* Related Posts */}
