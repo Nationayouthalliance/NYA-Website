@@ -57,7 +57,7 @@ const AboutPage = () => {
   return (
     <Layout>
       {/* Hero Section */}
-      <section className="pt-32 pb-20 bg-gradient-to-b from-foreground to-foreground/95 relative overflow-hidden">
+      <section aria-labelledby="about-hero-heading" className="pt-32 pb-20 bg-gradient-to-b from-foreground to-foreground/95 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-20 left-0 text-[12rem] font-display font-bold leading-none">ABOUT</div>
           <div className="absolute bottom-0 right-0 text-[12rem] font-display font-bold leading-none">NYA</div>
@@ -72,7 +72,7 @@ const AboutPage = () => {
             <span className="inline-block px-4 py-2 rounded-full bg-primary/20 text-primary text-sm font-medium mb-6">
               Our Story
             </span>
-            <h1 className="font-display text-5xl sm:text-6xl lg:text-8xl text-background mb-8">
+            <h1 id="about-hero-heading" className="font-display text-5xl sm:text-6xl lg:text-8xl text-background mb-8">
               We're building the{' '}
               <span className="text-gradient bg-gradient-hero">India we deserve</span>
             </h1>
@@ -108,13 +108,13 @@ const AboutPage = () => {
                 <motion.img 
                   whileHover={{ scale: 1.02, rotate: -2 }}
                   src={community1} 
-                  alt="Community" 
+                  alt="National Youth Alliance community members collaborating for social change in India"
                   className="rounded-3xl shadow-lg w-full h-64 object-cover"
                 />
                 <motion.img 
                   whileHover={{ scale: 1.02, rotate: 2 }}
                   src={community2} 
-                  alt="Volunteers" 
+                  alt="National Youth Alliance volunteers engaged in youth-led civic action"
                   className="rounded-3xl shadow-lg w-full h-64 object-cover mt-12"
                 />
               </div>
@@ -269,7 +269,7 @@ const AboutPage = () => {
               <motion.img
                 whileHover={{ scale: 1.02 }}
                 src={community3}
-                alt="Decentralized movement"
+               alt="Decentralized youth-led movement of National Youth Alliance across India"
                 className="rounded-3xl shadow-2xl w-full"
               />
             </AnimatedSection>
