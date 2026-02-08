@@ -67,7 +67,7 @@ const featuredPosts = posts.filter(post => post.featured);
   return (
     <Layout>
       {/* Hero Section */}
-      <section className="pt-32 pb-16 bg-gradient-to-b from-primary/10 to-background relative overflow-hidden">
+      <section aria-labelledby="blog-hero-heading" className="pt-32 pb-16 bg-gradient-to-b from-primary/10 to-background relative overflow-hidden">
         <div className="absolute top-20 left-10 w-72 h-72 rounded-full bg-primary/20 blur-3xl" />
         <div className="absolute bottom-0 right-10 w-48 h-48 rounded-full bg-orange/20 blur-3xl" />
         
@@ -76,7 +76,7 @@ const featuredPosts = posts.filter(post => post.featured);
             <span className="inline-block px-4 py-2 rounded-full bg-primary/20 text-primary text-sm font-medium mb-6 border border-primary/30">
               ✍️ NYA Blog
             </span>
-            <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl text-foreground mb-6">
+            <h1 id="blog-hero-heading" className="font-display text-5xl sm:text-6xl lg:text-7xl text-foreground mb-6">
               Stories of{' '}
               <span className="text-gradient bg-gradient-hero">change</span>
             </h1>
@@ -125,12 +125,12 @@ const featuredPosts = posts.filter(post => post.featured);
 
       {/* Featured Posts */}
       {activeCategory === 'All' && searchQuery === '' && (
-        <section className="py-16 bg-background">
+        <section aria-labelledby="featured-articles" className="py-16 bg-background">
           <div className="container mx-auto px-4">
             <AnimatedSection className="mb-10">
               <div className="flex items-center gap-3">
                 <Sparkles className="text-primary" size={24} />
-                <h2 className="font-display text-2xl text-foreground">Featured Stories</h2>
+                <h2 id="featured-articles" className="font-display text-2xl text-foreground">Featured Stories</h2>
               </div>
             </AnimatedSection>
 
@@ -199,7 +199,7 @@ const featuredPosts = posts.filter(post => post.featured);
   {post.cover_image ? (
     <img
       src={post.cover_image}
-      alt={post.title}
+      alt={`${post.title} - National Youth Alliance Blog`}
       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
     />
   ) : (
