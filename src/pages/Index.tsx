@@ -78,11 +78,12 @@ const Index = () => {
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Background Image with Overlay */}
         <div className="absolute inset-0">
-          <img 
-            src={heroImage} 
-            alt="Youth movement" 
-            className="w-full h-full object-cover"
-          />
+         <img 
+  src={heroImage} 
+  alt="National Youth Alliance India youth-led movement fighting corruption and demanding transparency" 
+  className="w-full h-full object-cover"
+/>
+
           <div className="absolute inset-0 bg-gradient-to-b from-foreground/80 via-foreground/60 to-foreground" />
         </div>
         
@@ -184,14 +185,18 @@ const Index = () => {
       </section>
 
       {/* What is NYA Section */}
-      <section className="py-24 bg-background relative overflow-hidden">
+      <section
+  className="py-24 bg-background relative overflow-hidden"
+  aria-labelledby="what-is-nya"
+>
+
         <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-primary/5 blur-3xl" />
         <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full bg-accent/5 blur-3xl" />
         
         <div className="container mx-auto px-4 relative">
           <AnimatedSection className="text-center mb-16">
             <span className="sticker-primary mb-4 inline-block">What is NYA?</span>
-            <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl text-foreground mb-6">
+            <h2 id="what-is-nya" className="font-display text-4xl sm:text-5xl lg:text-6xl text-foreground mb-6">
               A movement, not an organization
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
@@ -208,20 +213,31 @@ const Index = () => {
                     whileHover={{ rotate: -2, scale: 1.02 }}
                     className="rounded-3xl overflow-hidden shadow-lg"
                   >
-                    <img src={community1} alt="Community" className="w-full h-64 object-cover" />
+                   <img
+  src={community1}
+  alt="Youth community members of National Youth Alliance working together in India"
+  className="w-full h-64 object-cover"
+/>
                   </motion.div>
                   <motion.div 
                     whileHover={{ rotate: 2, scale: 1.02 }}
                     className="rounded-3xl overflow-hidden shadow-lg mt-8"
                   >
-                    <img src={community2} alt="Volunteers" className="w-full h-64 object-cover" />
-                  </motion.div>
+                    <img
+  src={community2}
+  alt="Volunteers of National Youth Alliance participating in civic action"
+  className="w-full h-64 object-cover"
+/>
                 </div>
                 <motion.div 
                   whileHover={{ rotate: -1, scale: 1.02 }}
                   className="absolute -bottom-40 left-1/4 -translate-x-1/2 w-3/4 rounded-3xl overflow-hidden shadow-xl border-4 border-background"
                 >
-                  <img src={community3} alt="Rally" className="w-full h-48 object-cover" />
+                 <img
+  src={community3}
+  alt="National Youth Alliance rally led by young Indians for transparency"
+  className="w-full h-48 object-cover"
+/>
                 </motion.div>
               </div>
             </AnimatedSection>
@@ -254,7 +270,7 @@ const Index = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="py-20 bg-foreground relative overflow-hidden">
+      <section className="py-20 bg-foreground relative overflow-hidden"  aria-label="National Youth Alliance impact statistics">
         <div className="absolute inset-0 opacity-5">
           <div className="absolute top-10 left-10 text-9xl font-display font-bold">NYA</div>
           <div className="absolute bottom-10 right-10 text-9xl font-display font-bold">INDIA</div>
@@ -398,6 +414,7 @@ const Index = () => {
             <form className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto" onSubmit={(e) => e.preventDefault()}>
               <input
                 type="email"
+                aria-label="Email address for NYA newsletter"
                 placeholder="your@email.com"
                 className="flex-1 px-5 py-3 rounded-full bg-white/50 border border-white/70 text-white placeholder:text-white/80 focus:bg-white/30 focus:border-white outline-none transition-all"
               />
