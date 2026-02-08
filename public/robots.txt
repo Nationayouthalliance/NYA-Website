@@ -1,14 +1,74 @@
 User-agent: Googlebot
 Allow: /
 
+# Block admin & system routes
+Disallow: /admin/
+Disallow: /503
+Disallow: /report
+
+# Allow assets
+Allow: /assets/
+Allow: /images/
+
+# Sitemap location
+Sitemap: https://nyagenz.in/sitemap.xml
+
 User-agent: Bingbot
 Allow: /
+
+# Block admin & system routes
+Disallow: /admin/
+Disallow: /503
+Disallow: /report
+
+# Allow assets
+Allow: /assets/
+Allow: /images/
+
+# Sitemap location
+Sitemap: https://nyagenz.in/sitemap.xml
 
 User-agent: Twitterbot
 Allow: /
 
+# Block admin & system routes
+Disallow: /admin/
+Disallow: /503
+Disallow: /report
+
+# Allow assets
+Allow: /assets/
+Allow: /images/
+
+# Sitemap location
+Sitemap: https://nyagenz.in/sitemap.xml
+
 User-agent: facebookexternalhit
 Allow: /
 
+# Block admin & system routes
+Disallow: /admin/
+Disallow: /503
+Disallow: /report
+
+# Allow assets
+Allow: /assets/
+Allow: /images/
+
+# Sitemap location
+Sitemap: https://nyagenz.in/sitemap.xml
+
 User-agent: *
 Allow: /
+
+# Block admin & system routes
+Disallow: /admin/
+Disallow: /503
+Disallow: /report
+
+# Allow assets
+Allow: /assets/
+Allow: /images/
+
+# Sitemap location
+Sitemap: https://nyagenz.in/sitemap.xml
