@@ -1,48 +1,45 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
-interface SEOProps {
+type SEOProps = {
   title: string;
   description: string;
-  canonical?: string;
   noIndex?: boolean;
-}
+};
 
-const SEO = ({ title, description, canonical, noIndex = false }: SEOProps) => {
+const SEO = ({ title, description, noIndex = false }: SEOProps) => {
   const location = useLocation();
 
   useEffect(() => {
     document.title = title;
 
-    const metaDescription = document.querySelector(
-      'meta[name="description"]'
-    );
-    if (metaDescription) {
-      metaDescription.setAttribute("content", description);
+    let desc = document.querySelector('meta[name="description"]');
+    if (!desc) {
+      desc = document.createElement("meta");
+      desc.setAttribute("name", "description");
+      document.head.appendChild(desc);
     }
+    desc.setAttribute("content", description);
 
-    let canonicalLink = document.querySelector("link[rel='canonical']");
-    if (!canonicalLink) {
-      canonicalLink = document.createElement("link");
-      canonicalLink.setAttribute("rel", "canonical");
-      document.head.appendChild(canonicalLink);
+    let robots = document.querySelector('meta[name="robots"]');
+    if (!robots) {
+      robots = document.createElement("meta");
+      robots.setAttribute("name", "robots");
+      document.head.appendChild(robots);
     }
-    canonicalLink.setAttribute(
-      "href",
-      canonical || `https://nyagenz.in${location.pathname}`
-    );
-
-    let robotsMeta = document.querySelector("meta[name='robots']");
-    if (!robotsMeta) {
-      robotsMeta = document.createElement("meta");
-      robotsMeta.setAttribute("name", "robots");
-      document.head.appendChild(robotsMeta);
-    }
-    robotsMeta.setAttribute(
+    robots.setAttribute(
       "content",
       noIndex ? "noindex, nofollow" : "index, follow"
     );
-  }, [title, description, canonical, noIndex, location.pathname]);
+
+    let canonical = document.querySelector('link[rel="canonical"]');
+    if (!canonical) {
+      canonical = document.createElement("link");
+      canonical.setAttribute("rel", "canonical");
+      document.head.appendChild(canonical);
+    }
+    canonical.setAttribute("href", `https://nyagenz.in${location.pathname}`);
+  }, [title, description, noIndex, location.pathname]);
 
   return null;
 };
