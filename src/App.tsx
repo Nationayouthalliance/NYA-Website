@@ -6,6 +6,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/admin/ProtectedRoute";
 import { AdminLayout } from "@/components/admin/AdminLayout";
+import { ScrollToTop } from "@/components/ScrollToTop";
+import SEO from "@/components/SEO";
 
 // Public pages
 import Index from "./pages/Index";
@@ -39,7 +41,6 @@ import ReportsManager from "./pages/admin/ReportsManager";
 import ActivityLogs from "./pages/admin/ActivityLogs";
 import AdminsManager from "./pages/admin/AdminsManager";
 import SettingsManager from "./pages/admin/SettingsManager";
-import { ScrollToTop } from "@/components/ScrollToTop";
 
 const queryClient = new QueryClient();
 
@@ -52,42 +53,43 @@ const App = () => (
         <BrowserRouter>
           <ScrollToTop />
           <Routes>
+
             {/* Public Routes */}
-            <Route path="/" element={<Index />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/team" element={<Team />} />
-            <Route path="/chapters" element={<Chapters />} />
-            <Route path="/resources" element={<Resources />} />
-            <Route path="/media" element={<Media />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/blog/:slug" element={<BlogPost />} />
-            <Route path="/join" element={<Join />} />
-            <Route path="/join-nya" element={<JoinNYA />} />
-            <Route path="/report" element={<Report />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/503" element={<Maintenance />} />
-            
-          
-            {/* Admin Routes */}
-            
-            <Route path="/admin/login" element={<Login />} />
-            <Route path="/admin/access-denied" element={<AccessDenied />} />
-            <Route path="/admin" element={<ProtectedRoute><AdminLayout><Dashboard /></AdminLayout></ProtectedRoute>} />
-            <Route path="/admin/home" element={<ProtectedRoute requiredPermission="homeManager"><AdminLayout><HomeManager /></AdminLayout></ProtectedRoute>} />
-            <Route path="/admin/journey" element={<ProtectedRoute requiredPermission="journeyManager"><AdminLayout><JourneyManager /></AdminLayout></ProtectedRoute>} />
-            <Route path="/admin/team" element={<ProtectedRoute requiredPermission="team"><AdminLayout><TeamManager /></AdminLayout></ProtectedRoute>} />
-            <Route path="/admin/chapters" element={<ProtectedRoute requiredPermission="chapters"><AdminLayout><ChaptersManager /></AdminLayout></ProtectedRoute>} />
-            <Route path="/admin/media" element={<ProtectedRoute requiredPermission="media"><AdminLayout><MediaManager /></AdminLayout></ProtectedRoute>} />
-            <Route path="/admin/resources" element={<ProtectedRoute requiredPermission="resources"><AdminLayout><ResourcesManager /></AdminLayout></ProtectedRoute>} />
-            <Route path="/admin/blog" element={<ProtectedRoute requiredPermission="blog"><AdminLayout><BlogManager /></AdminLayout></ProtectedRoute>} />
-            <Route path="/admin/join-requests" element={<ProtectedRoute requiredPermission="joinRequests"><AdminLayout><JoinRequestsManager /></AdminLayout></ProtectedRoute>} />
-            <Route path="/admin/reports" element={<ProtectedRoute requiredPermission="reports"><AdminLayout><ReportsManager /></AdminLayout></ProtectedRoute>} />
-            <Route path="/admin/logs" element={<ProtectedRoute requiredPermission="logs"><AdminLayout><ActivityLogs /></AdminLayout></ProtectedRoute>} />
-            <Route path="/admin/admins" element={<ProtectedRoute requiredPermission="admins"><AdminLayout><AdminsManager /></AdminLayout></ProtectedRoute>} />
-            <Route path="/admin/settings" element={<ProtectedRoute requiredPermission="settings"><AdminLayout><SettingsManager /></AdminLayout></ProtectedRoute>} />
-          
-            {/* 404 */} 
+            <Route path="/" element={<><SEO title="Youth Organization in India | National Youth Alliance" description="National Youth Alliance (NYA) is a youth-led organization in India empowering young citizens for transparency and accountability." /><Index /></>} />
+            <Route path="/about" element={<><SEO title="About National Youth Alliance" description="Learn about the mission, vision, and values of National Youth Alliance." /><About /></>} />
+            <Route path="/team" element={<><SEO title="NYA Team | National Youth Alliance" description="Meet the team behind National Youth Alliance driving youth-led change in India." /><Team /></>} />
+            <Route path="/chapters" element={<><SEO title="NYA Chapters Across India" description="Explore National Youth Alliance chapters operating across India." /><Chapters /></>} />
+            <Route path="/resources" element={<><SEO title="Resources | National Youth Alliance" description="Reports, documents, and resources published by National Youth Alliance." /><Resources /></>} />
+            <Route path="/media" element={<><SEO title="Media | National Youth Alliance" description="Photos, videos, and media coverage of National Youth Alliance." /><Media /></>} />
+            <Route path="/blog" element={<><SEO title="Blog | National Youth Alliance" description="Articles and updates from National Youth Alliance." /><Blog /></>} />
+            <Route path="/blog/:slug" element={<><SEO title="NYA Blog Post" description="Article published by National Youth Alliance." /><BlogPost /></>} />
+            <Route path="/join" element={<><SEO title="Join National Youth Alliance" description="Join National Youth Alliance and be part of a youth-led movement." /><Join /></>} />
+            <Route path="/join-nya" element={<><SEO title="Join NYA | National Youth Alliance" description="Apply to become a member of National Youth Alliance." /><JoinNYA /></>} />
+            <Route path="/report" element={<><SEO title="Report an Issue | National Youth Alliance" description="Report issues securely to National Youth Alliance." /><Report /></>} />
+            <Route path="/contact" element={<><SEO title="Contact National Youth Alliance" description="Get in touch with National Youth Alliance." /><Contact /></>} />
+            <Route path="/503" element={<><SEO title="Maintenance | NYA" description="Website under maintenance." noIndex /><Maintenance /></>} />
+
+            {/* Admin Routes (NO INDEX) */}
+            <Route path="/admin/login" element={<><SEO title="Admin Login | NYA" description="Admin Login" noIndex /><Login /></>} />
+            <Route path="/admin/access-denied" element={<><SEO title="Access Denied" description="Access Denied" noIndex /><AccessDenied /></>} />
+
+            <Route path="/admin" element={<><SEO title="Admin Dashboard" description="Admin Dashboard" noIndex /><ProtectedRoute><AdminLayout><Dashboard /></AdminLayout></ProtectedRoute></>} />
+            <Route path="/admin/home" element={<><SEO title="Home Manager" description="Admin" noIndex /><ProtectedRoute requiredPermission="homeManager"><AdminLayout><HomeManager /></AdminLayout></ProtectedRoute></>} />
+            <Route path="/admin/journey" element={<><SEO title="Journey Manager" description="Admin" noIndex /><ProtectedRoute requiredPermission="journeyManager"><AdminLayout><JourneyManager /></AdminLayout></ProtectedRoute></>} />
+            <Route path="/admin/team" element={<><SEO title="Team Manager" description="Admin" noIndex /><ProtectedRoute requiredPermission="team"><AdminLayout><TeamManager /></AdminLayout></ProtectedRoute></>} />
+            <Route path="/admin/chapters" element={<><SEO title="Chapters Manager" description="Admin" noIndex /><ProtectedRoute requiredPermission="chapters"><AdminLayout><ChaptersManager /></AdminLayout></ProtectedRoute></>} />
+            <Route path="/admin/media" element={<><SEO title="Media Manager" description="Admin" noIndex /><ProtectedRoute requiredPermission="media"><AdminLayout><MediaManager /></AdminLayout></ProtectedRoute></>} />
+            <Route path="/admin/resources" element={<><SEO title="Resources Manager" description="Admin" noIndex /><ProtectedRoute requiredPermission="resources"><AdminLayout><ResourcesManager /></AdminLayout></ProtectedRoute></>} />
+            <Route path="/admin/blog" element={<><SEO title="Blog Manager" description="Admin" noIndex /><ProtectedRoute requiredPermission="blog"><AdminLayout><BlogManager /></AdminLayout></ProtectedRoute></>} />
+            <Route path="/admin/join-requests" element={<><SEO title="Join Requests" description="Admin" noIndex /><ProtectedRoute requiredPermission="joinRequests"><AdminLayout><JoinRequestsManager /></AdminLayout></ProtectedRoute></>} />
+            <Route path="/admin/reports" element={<><SEO title="Reports Manager" description="Admin" noIndex /><ProtectedRoute requiredPermission="reports"><AdminLayout><ReportsManager /></AdminLayout></ProtectedRoute></>} />
+            <Route path="/admin/logs" element={<><SEO title="Activity Logs" description="Admin" noIndex /><ProtectedRoute requiredPermission="logs"><AdminLayout><ActivityLogs /></AdminLayout></ProtectedRoute></>} />
+            <Route path="/admin/admins" element={<><SEO title="Admins Manager" description="Admin" noIndex /><ProtectedRoute requiredPermission="admins"><AdminLayout><AdminsManager /></AdminLayout></ProtectedRoute></>} />
+            <Route path="/admin/settings" element={<><SEO title="Settings Manager" description="Admin" noIndex /><ProtectedRoute requiredPermission="settings"><AdminLayout><SettingsManager /></AdminLayout></ProtectedRoute></>} />
+
+            {/* 404 */}
             <Route path="*" element={<NotFound />} />
+
           </Routes>
         </BrowserRouter>
       </AuthProvider>
