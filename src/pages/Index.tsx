@@ -41,6 +41,7 @@ const features = [
 ];
 
 const Index = () => {
+    const [isSubscribed, setIsSubscribed] = useState(false);
     const [stats, setStats] = useState([
     { label: 'Active Members', value: 0, suffix: '+', icon: Users },
     { label: 'Chapters', value: 0, suffix: '', icon: MapPin },
@@ -74,7 +75,6 @@ const Index = () => {
     fetchStats();
   }, []);
 
-const [isSubscribed, setIsSubscribed] = useState(false);
 
 const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   e.preventDefault();
