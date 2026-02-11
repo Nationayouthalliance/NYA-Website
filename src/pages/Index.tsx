@@ -399,7 +399,7 @@ const Index = () => {
         </div>
       </section>
      {/* Newsletter CTA */}
-      <section className="py-20 bg-primary">
+<section className="py-20 bg-primary">
   <div className="container mx-auto px-4">
     <AnimatedSection className="text-center max-w-2xl mx-auto">
       <span className="font-handwritten text-3xl text-white/90 mb-4 block">
@@ -417,24 +417,25 @@ const Index = () => {
         method="POST" 
         action="https://a74b91df.sibforms.com"
       >
+        {/* Name Field */}
         <input
           type="text"
           name="FIRSTNAME"
           required
-          aria-label="Full Name for NYA newsletter"
           placeholder="Your Name"
           className="flex-1 px-5 py-3 rounded-full bg-white/50 border border-white/70 text-white placeholder:text-white/80 focus:bg-white/30 focus:border-white outline-none transition-all"
         />
 
+        {/* Email Field */}
         <input
           type="email"
           name="EMAIL"
           required
-          aria-label="Email address for NYA newsletter"
           placeholder="your@email.com"
           className="flex-1 px-5 py-3 rounded-full bg-white/50 border border-white/70 text-white placeholder:text-white/80 focus:bg-white/30 focus:border-white outline-none transition-all"
         />
         
+        {/* Brevo Hidden Fields - Double braces required for style in JSX */}
         <input type="text" name="email_address_check" value="" style={{ display: 'none' }} readOnly />
         <input type="hidden" name="locale" value="en" />
         <input type="hidden" name="html_type" value="simple" />
@@ -451,6 +452,7 @@ const Index = () => {
     </AnimatedSection>
   </div>
 </section>
+
 
     </Layout>
   );
