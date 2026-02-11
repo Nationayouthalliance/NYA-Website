@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, Users, MapPin, Flag, Heart, Megaphone, Shield, Sparkles } from 'lucide-react';
+import { ArrowRight, Users, MapPin, Flag, Heart, Shield, Sparkles } from 'lucide-react';
 import { Layout } from '@/components/Layout';
 import { AnimatedSection, AnimatedCounter, StaggerContainer, StaggerItem, FloatingElement, HoverScale } from '@/components/AnimatedElements';
 
@@ -8,10 +8,9 @@ import heroImage from '@/assets/hero-image.jpg';
 import community1 from '@/assets/community-1.jpg';
 import community2 from '@/assets/community-2.jpg';
 import community3 from '@/assets/community-3.jpg';
+
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
-const [status, setStatus] = useState<'idle' | 'loading' | 'success'>('idle');
-
 
 const features = [
   {
@@ -41,21 +40,24 @@ const features = [
 ];
 
 const Index = () => {
-    const [isSubscribed, setIsSubscribed] = useState(false);
-    const [stats, setStats] = useState([
+
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success'>('idle');
+  const [isSubscribed, setIsSubscribed] = useState(false);
+
+  const [stats, setStats] = useState([
     { label: 'Active Members', value: 0, suffix: '+', icon: Users },
     { label: 'Chapters', value: 0, suffix: '', icon: MapPin },
     { label: 'States Covered', value: 0, suffix: '', icon: Flag },
     { label: 'Issues Resolved', value: 0, suffix: '+', icon: Shield },
   ]);
+
   useEffect(() => {
     const fetchStats = async () => {
       const { data, error } = await supabase
-.from('home_stats')
-.select('*')
-.eq('id', '00000000-0000-0000-0000-000000000001')
-.single();
-
+        .from('home_stats')
+        .select('*')
+        .eq('id', '00000000-0000-0000-0000-000000000001')
+        .single();
 
       if (error) {
         console.error('Error fetching home stats:', error);
@@ -75,25 +77,31 @@ const Index = () => {
     fetchStats();
   }, []);
 
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setStatus('loading');
 
-const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
-  const form = e.currentTarget;
-  const formData = new FormData(form);
+    const form = e.currentTarget;
+    const formData = new FormData(form);
 
-  try {
-    await fetch("https://a74b91df.sibforms.com/serve/MUIFAEES8pCwgQymdgCDgRsphqSTxETtRXlhaL5WytsRr9ELRYadKODw1zMUgA8XdklGbqxZwqXADak2tAd537HU88VK59uB7hlg3Qi8zamRBFwCx59HbV6kD33YITOQNwUTYbK6F420yVXvNBYXGo4qkQ6fD5h5uDduckeC5M55UG2urOWoEW7W7pw7JW30irCQpBkYe9Sz8f32aw==", {
-      method: 'POST',
-      body: formData,
-      mode: 'no-cors',
-    });
-    setIsSubscribed(true);
-    form.reset();
-  } catch (error) {
-    console.error("Submission error", error);
-  }
-};
+    try {
+      await fetch(
+        "https://a74b91df.sibforms.com/serve/MUIFAEES8pCwgQymdgCDgRsphqSTxETtRXlhaL5WytsRr9ELRYadKODw1zMUgA8XdklGbqxZwqXADak2tAd537HU88VK59uB7hlg3Qi8zamRBFwCx59HbV6kD33YITOQNwUTYbK6F420yVXvNBYXGo4qkQ6fD5h5uDduckeC5M55UG2urOWoEW7W7pw7JW30irCQpBkYe9Sz8f32aw==",
+        {
+          method: 'POST',
+          body: formData,
+          mode: 'no-cors',
+        }
+      );
 
+      setIsSubscribed(true);
+      setStatus('success');
+      form.reset();
+    } catch (error) {
+      console.error("Submission error", error);
+      setStatus('idle');
+    }
+  };
 
   return (
     <Layout>
