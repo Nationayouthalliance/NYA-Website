@@ -400,43 +400,58 @@ const Index = () => {
       </section>
      {/* Newsletter CTA */}
       <section className="py-20 bg-primary">
-        <div className="container mx-auto px-4">
-          <AnimatedSection className="text-center max-w-2xl mx-auto">
-            <span className="font-handwritten text-3xl text-white/90 mb-4 block">
-              Stay in the loop
-            </span>
-            <h2 className="font-display text-3xl sm:text-4xl text-white mb-6">
-              Subscribe to our newsletter
-            </h2>
-            <p className="text-white/80 mb-8">
-              Get the latest stories, updates, and action alerts delivered to your inbox.
-            </p>
-            <form className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto" onSubmit={(e) => e.preventDefault()}>
-              <input
-                type="text"
-                aria-label="Your Full Name"
-                placeholder="Jhon Doe"
-                className="flex-1 px-5 py-3 rounded-full bg-white/50 border border-white/70 text-white placeholder:text-white/80 focus:bg-white/30 focus:border-white outline-none transition-all"
-              />
-              <input
-                type="email"
-                aria-label="Email address for NYA newsletter"
-                placeholder="your@email.com"
-                className="flex-1 px-5 py-3 rounded-full bg-white/50 border border-white/70 text-white placeholder:text-white/80 focus:bg-white/30 focus:border-white outline-none transition-all"
-              />
-              
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                type="submit"
-                className="px-6 py-3 bg-white text-orange font-bold rounded-full shadow-lg"
-              >
-                Subscribe
-              </motion.button>
-            </form>
-          </AnimatedSection>
-        </div>
-      </section>
+  <div className="container mx-auto px-4">
+    <AnimatedSection className="text-center max-w-2xl mx-auto">
+      <span className="font-handwritten text-3xl text-white/90 mb-4 block">
+        Stay in the loop
+      </span>
+      <h2 className="font-display text-3xl sm:text-4xl text-white mb-6">
+        Subscribe to our newsletter
+      </h2>
+      <p className="text-white/80 mb-8">
+        Get the latest stories, updates, and action alerts delivered to your inbox.
+      </p>
+
+      <form 
+        className="flex flex-col sm:flex-row gap-3 max-w-xl mx-auto" 
+        method="POST" 
+        action="https://a74b91df.sibforms.com"
+      >
+        <input
+          type="text"
+          name="FIRSTNAME"
+          required
+          aria-label="Full Name for NYA newsletter"
+          placeholder="Your Name"
+          className="flex-1 px-5 py-3 rounded-full bg-white/50 border border-white/70 text-white placeholder:text-white/80 focus:bg-white/30 focus:border-white outline-none transition-all"
+        />
+
+        <input
+          type="email"
+          name="EMAIL"
+          required
+          aria-label="Email address for NYA newsletter"
+          placeholder="your@email.com"
+          className="flex-1 px-5 py-3 rounded-full bg-white/50 border border-white/70 text-white placeholder:text-white/80 focus:bg-white/30 focus:border-white outline-none transition-all"
+        />
+        
+        <input type="text" name="email_address_check" value="" style={{ display: 'none' }} readOnly />
+        <input type="hidden" name="locale" value="en" />
+        <input type="hidden" name="html_type" value="simple" />
+
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          type="submit"
+          className="px-6 py-3 bg-white text-orange font-bold rounded-full shadow-lg"
+        >
+          Subscribe
+        </motion.button>
+      </form>
+    </AnimatedSection>
+  </div>
+</section>
+
     </Layout>
   );
 };
