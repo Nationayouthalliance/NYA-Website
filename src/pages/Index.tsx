@@ -10,6 +10,8 @@ import community2 from '@/assets/community-2.jpg';
 import community3 from '@/assets/community-3.jpg';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
+const [status, setStatus] = useState<'idle' | 'loading' | 'success'>('idle');
+
 
 const features = [
   {
@@ -71,6 +73,27 @@ const Index = () => {
 
     fetchStats();
   }, []);
+
+const [isSubscribed, setIsSubscribed] = useState(false);
+
+const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  const form = e.currentTarget;
+  const formData = new FormData(form);
+
+  try {
+    await fetch("https://a74b91df.sibforms.com/serve/MUIFAEES8pCwgQymdgCDgRsphqSTxETtRXlhaL5WytsRr9ELRYadKODw1zMUgA8XdklGbqxZwqXADak2tAd537HU88VK59uB7hlg3Qi8zamRBFwCx59HbV6kD33YITOQNwUTYbK6F420yVXvNBYXGo4qkQ6fD5h5uDduckeC5M55UG2urOWoEW7W7pw7JW30irCQpBkYe9Sz8f32aw==", {
+      method: 'POST',
+      body: formData,
+      mode: 'no-cors',
+    });
+    setIsSubscribed(true);
+    form.reset();
+  } catch (error) {
+    console.error("Submission error", error);
+  }
+};
+
 
   return (
     <Layout>
@@ -408,18 +431,22 @@ const Index = () => {
         Stay in the loop
       </span>
       <h2 className="font-display text-3xl sm:text-4xl text-white mb-6">
-        Subscribe to our newsletter
+        {isSubscribed ? "Check your inbox!" : "Subscribe to our newsletter"}
       </h2>
       <p className="text-white/80 mb-8">
-        Get the latest stories, updates, and action alerts delivered to your inbox.
+        {isSubscribed 
+          ? "We've sent you a confirmation email." 
+          : "Get the latest stories, updates, and action alerts delivered to your inbox."}
       </p>
 
+      {/* Logic applied here: added onSubmit and the Full Brevo URL */}
       <form 
+        onSubmit={handleSubmit}
         className="flex flex-col sm:flex-row gap-3 max-w-xl mx-auto" 
         method="POST" 
-        action="https://a74b91df.sibforms.com"
+        action="https://a74b91df.sibforms.com/serve/MUIFAEES8pCwgQymdgCDgRsphqSTxETtRXlhaL5WytsRr9ELRYadKODw1zMUgA8XdklGbqxZwqXADak2tAd537HU88VK59uB7hlg3Qi8zamRBFwCx59HbV6kD33YITOQNwUTYbK6F420yVXvNBYXGo4qkQ6fD5h5uDduckeC5M55UG2urOWoEW7W7pw7JW30irCQpBkYe9Sz8f32aw=="
       >
-        {/* Name Field */}
+        {/* Name Field - Kept your exact design */}
         <input
           type="text"
           name="FIRSTNAME"
@@ -428,7 +455,7 @@ const Index = () => {
           className="flex-1 px-5 py-3 rounded-full bg-white/50 border border-white/70 text-white placeholder:text-white/80 focus:bg-white/30 focus:border-white outline-none transition-all"
         />
 
-        {/* Email Field */}
+        {/* Email Field - Kept your exact design */}
         <input
           type="email"
           name="EMAIL"
@@ -437,7 +464,7 @@ const Index = () => {
           className="flex-1 px-5 py-3 rounded-full bg-white/50 border border-white/70 text-white placeholder:text-white/80 focus:bg-white/30 focus:border-white outline-none transition-all"
         />
         
-        {/* Brevo Hidden Fields - Double braces required for style in JSX */}
+        {/* Brevo Hidden Fields */}
         <input type="text" name="email_address_check" value="" style={{ display: 'none' }} readOnly />
         <input type="hidden" name="locale" value="en" />
         <input type="hidden" name="html_type" value="simple" />
@@ -454,6 +481,7 @@ const Index = () => {
     </AnimatedSection>
   </div>
 </section>
+
 
 
     </Layout>
