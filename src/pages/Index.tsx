@@ -220,15 +220,16 @@ const Index = () => {
 />
                   </motion.div>
                   <motion.div 
-                    whileHover={{ rotate: 2, scale: 1.02 }}
-                    className="rounded-3xl overflow-hidden shadow-lg mt-8"
-                  >
-                    <img
-  src={community2}
-  alt="Volunteers of National Youth Alliance participating in civic action"
-  className="w-full h-64 object-cover"
+  whileHover={{ rotate: 2, scale: 1.02 }}
+  className="rounded-3xl overflow-hidden shadow-lg mt-8"
+>
+  <img
+    src={community2}
+    alt="Volunteers of National Youth Alliance participating in civic action"
+    className="w-full h-64 object-cover"
 />
-                </div>
+</motion.div> 
+
                 <motion.div 
                   whileHover={{ rotate: -1, scale: 1.02 }}
                   className="absolute -bottom-40 left-1/4 -translate-x-1/2 w-3/4 rounded-3xl overflow-hidden shadow-xl border-4 border-background"
@@ -239,6 +240,7 @@ const Index = () => {
   className="w-full h-48 object-cover"
 />
                 </motion.div>
+              </div>
               </div>
             </AnimatedSection>
 
