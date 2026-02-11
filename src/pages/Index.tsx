@@ -439,12 +439,11 @@ const Index = () => {
         Stay in the loop
       </span>
       <h2 className="font-display text-3xl sm:text-4xl text-white mb-6">
-        {isSubscribed ? "Check your inbox!" : "Subscribe to our newsletter"}
+        {isSubscribed ? "Thanks!" : "Now you will start receiving Newsletter Weekly"}
       </h2>
       <p className="text-white/80 mb-8">
         {isSubscribed 
-          ? "We've sent you a confirmation email." 
-          : "Get the latest stories, updates, and action alerts delivered to your inbox."}
+          ? "Get the latest stories, updates, and action alerts delivered to your inbox."}
       </p>
 
       {/* Logic applied here: added onSubmit and the Full Brevo URL */}
