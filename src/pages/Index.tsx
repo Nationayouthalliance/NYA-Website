@@ -413,11 +413,18 @@ const Index = () => {
             </p>
             <form className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto" onSubmit={(e) => e.preventDefault()}>
               <input
+                type="text"
+                aria-label="Your Full Name"
+                placeholder="Jhon Doe"
+                className="flex-1 px-5 py-3 rounded-full bg-white/50 border border-white/70 text-white placeholder:text-white/80 focus:bg-white/30 focus:border-white outline-none transition-all"
+              />
+              <input
                 type="email"
                 aria-label="Email address for NYA newsletter"
                 placeholder="your@email.com"
                 className="flex-1 px-5 py-3 rounded-full bg-white/50 border border-white/70 text-white placeholder:text-white/80 focus:bg-white/30 focus:border-white outline-none transition-all"
               />
+              
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
