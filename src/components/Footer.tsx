@@ -35,7 +35,7 @@ const footerLinks = {
 };
 
 const socialLinks = [
-  { name: 'Discord', icon: FaDiscord, url: 'https://discord.gg/EVSEgZ2c' },
+  { name: 'Discord', icon: FaDiscord, url: 'https://discord.com/invite/MWJGf7QdJX' },
   { name: 'Instagram', icon: Instagram, url: 'https://www.instagram.com/nationalyouthalliance.genz/' },
   { name: 'Facebook', icon: Facebook, url: 'https://www.facebook.com/people/National-Youth-Alliance/61585687675924/' },
   { name: 'Twitter', icon: Twitter, url: 'https://x.com/NYA_Genz' },
