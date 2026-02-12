@@ -86,7 +86,7 @@ const Index = () => {
 
     try {
       await fetch(
-        "https://a74b91df.sibforms.com/serve/MUIFAEES8pCwgQymdgCDgRsphqSTxETtRXlhaL5WytsRr9ELRYadKODw1zMUgA8XdklGbqxZwqXADak2tAd537HU88VK59uB7hlg3Qi8zamRBFwCx59HbV6kD33YITOQNwUTYbK6F420yVXvNBYXGo4qkQ6fD5h5uDduckeC5M55UG2urOWoEW7W7pw7JW30irCQpBkYe9Sz8f32aw==",
+        "https://9fc4f65d.sibforms.com/serve/MUIFAIWCEw388A7bsBPnyxU3MCpzvXyNcuBZYDAw2QMqn3S5V_a9zp8OJFkbZTjjbz1ivEU-_YWabHlL-l7XG_sZZQvjH8PBXLdqpO_KshoYX-Rz8FroYLSUPTL1Ccr-zhtySJsm5gVtiJc6eLtQ5P0Ih01V4Y_gTcetnsHNydUVKthsMx0XUHJqOBgdgXXTiMYUrqiegnqwhMRchA==",
         {
           method: 'POST',
           body: formData,
@@ -455,7 +455,7 @@ const Index = () => {
         onSubmit={handleSubmit}
         className="flex flex-col sm:flex-row gap-3 max-w-xl mx-auto" 
         method="POST" 
-        action="https://a74b91df.sibforms.com/serve/MUIFAEES8pCwgQymdgCDgRsphqSTxETtRXlhaL5WytsRr9ELRYadKODw1zMUgA8XdklGbqxZwqXADak2tAd537HU88VK59uB7hlg3Qi8zamRBFwCx59HbV6kD33YITOQNwUTYbK6F420yVXvNBYXGo4qkQ6fD5h5uDduckeC5M55UG2urOWoEW7W7pw7JW30irCQpBkYe9Sz8f32aw=="
+        action="https://9fc4f65d.sibforms.com/serve/MUIFAIWCEw388A7bsBPnyxU3MCpzvXyNcuBZYDAw2QMqn3S5V_a9zp8OJFkbZTjjbz1ivEU-_YWabHlL-l7XG_sZZQvjH8PBXLdqpO_KshoYX-Rz8FroYLSUPTL1Ccr-zhtySJsm5gVtiJc6eLtQ5P0Ih01V4Y_gTcetnsHNydUVKthsMx0XUHJqOBgdgXXTiMYUrqiegnqwhMRchA=="
       >
         {/* Name Field - Kept your exact design */}
         <input
