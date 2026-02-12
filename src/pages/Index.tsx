@@ -502,7 +502,7 @@ const Index = () => {
                 {/* hCaptcha */}
                 <div className="w-full flex justify-center my-4">
                   <HCaptcha
-                    sitekey="YOUR_SITE_KEY_HERE"
+                    sitekey="baf859da-095e-47c2-a670-bc0cd9084d08"
                     onVerify={(token) => setCaptchaToken(token)}
                     theme="dark"
                     ref={captchaRef}
