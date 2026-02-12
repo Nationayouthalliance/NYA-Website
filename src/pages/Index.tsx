@@ -9,8 +9,9 @@ import community1 from '@/assets/community-1.jpg';
 import community2 from '@/assets/community-2.jpg';
 import community3 from '@/assets/community-3.jpg';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
+import HCaptcha from '@hcaptcha/react-hcaptcha';
 
 const features = [
   {
@@ -43,6 +44,9 @@ const Index = () => {
 
   const [status, setStatus] = useState<'idle' | 'loading' | 'success'>('idle');
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+
+  const captchaRef = useRef<HCaptcha>(null);
 
   const [stats, setStats] = useState([
     { label: 'Active Members', value: 0, suffix: '+', icon: Users },
@@ -79,24 +83,40 @@ const Index = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!captchaToken) {
+      alert("Please complete the captcha.");
+      return;
+    }
+
     setStatus('loading');
 
     const form = e.currentTarget;
-    const formData = new FormData(form);
+    const formData = Object.fromEntries(new FormData(form).entries());
 
     try {
-      await fetch(
-        "https://9fc4f65d.sibforms.com/serve/MUIFAIWCEw388A7bsBPnyxU3MCpzvXyNcuBZYDAw2QMqn3S5V_a9zp8OJFkbZTjjbz1ivEU-_YWabHlL-l7XG_sZZQvjH8PBXLdqpO_KshoYX-Rz8FroYLSUPTL1Ccr-zhtySJsm5gVtiJc6eLtQ5P0Ih01V4Y_gTcetnsHNydUVKthsMx0XUHJqOBgdgXXTiMYUrqiegnqwhMRchA==",
-        {
-          method: 'POST',
-          body: formData,
-          mode: 'no-cors',
-        }
-      );
+      const response = await fetch('/api/verify-newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          captchaToken,
+          formData
+        }),
+      });
 
-      setIsSubscribed(true);
-      setStatus('success');
-      form.reset();
+      const result = await response.json();
+
+      if (result.success) {
+        setIsSubscribed(true);
+        setStatus('success');
+        form.reset();
+        captchaRef.current?.resetCaptcha();
+        setCaptchaToken(null);
+      } else {
+        alert("Captcha verification failed.");
+        setStatus('idle');
+      }
+
     } catch (error) {
       console.error("Submission error", error);
       setStatus('idle');
@@ -431,69 +451,78 @@ const Index = () => {
           </AnimatedSection>
         </div>
       </section>
-     {/* Newsletter CTA */}
-<section className="py-20 bg-primary">
-  <div className="container mx-auto px-4">
-    <AnimatedSection className="text-center max-w-2xl mx-auto">
-      <span className="font-handwritten text-3xl text-white/90 mb-4 block">
-        Stay in the loop
-      </span>
-  <h2 className="font-display text-3xl sm:text-4xl text-white mb-6">
-  {isSubscribed 
-    ? "Thanks for subscribing!" 
-    : "Subscribe to our Newsletter"}
-</h2>
+          {/* Your entire page content ABOVE remains unchanged */}
 
-<p className="text-white/80 mb-8">
-  {isSubscribed 
-    ? "You will start getting weekly Newsletter now."
-    : "Get the latest stories, updates, and action alerts delivered to your inbox."}
-</p>
+      {/* Newsletter CTA */}
+      <section className="py-20 bg-primary">
+        <div className="container mx-auto px-4">
+          <AnimatedSection className="text-center max-w-2xl mx-auto">
+            <span className="font-handwritten text-3xl text-white/90 mb-4 block">
+              Stay in the loop
+            </span>
 
-      {/* Logic applied here: added onSubmit and the Full Brevo URL */}
-      <form 
-        onSubmit={handleSubmit}
-        className="flex flex-col sm:flex-row gap-3 max-w-xl mx-auto" 
-        method="POST" 
-        action="https://9fc4f65d.sibforms.com/serve/MUIFAIWCEw388A7bsBPnyxU3MCpzvXyNcuBZYDAw2QMqn3S5V_a9zp8OJFkbZTjjbz1ivEU-_YWabHlL-l7XG_sZZQvjH8PBXLdqpO_KshoYX-Rz8FroYLSUPTL1Ccr-zhtySJsm5gVtiJc6eLtQ5P0Ih01V4Y_gTcetnsHNydUVKthsMx0XUHJqOBgdgXXTiMYUrqiegnqwhMRchA=="
-      >
-        {/* Name Field - Kept your exact design */}
-        <input
-          type="text"
-          name="FIRSTNAME"
-          required
-          placeholder="Your Name"
-          className="flex-1 px-5 py-3 rounded-full bg-white/50 border border-white/70 text-white placeholder:text-white/80 focus:bg-white/30 focus:border-white outline-none transition-all"
-        />
+            <h2 className="font-display text-3xl sm:text-4xl text-white mb-6">
+              {isSubscribed 
+                ? "Thanks for subscribing!" 
+                : "Subscribe to our Newsletter"}
+            </h2>
 
-        {/* Email Field - Kept your exact design */}
-        <input
-          type="email"
-          name="EMAIL"
-          required
-          placeholder="your@email.com"
-          className="flex-1 px-5 py-3 rounded-full bg-white/50 border border-white/70 text-white placeholder:text-white/80 focus:bg-white/30 focus:border-white outline-none transition-all"
-        />
-        
-        {/* Brevo Hidden Fields */}
-        <input type="text" name="email_address_check" value="" style={{ display: 'none' }} readOnly />
-        <input type="hidden" name="locale" value="en" />
-        <input type="hidden" name="html_type" value="simple" />
+            <p className="text-white/80 mb-8">
+              {isSubscribed 
+                ? "You will start getting weekly Newsletter now."
+                : "Get the latest stories, updates, and action alerts delivered to your inbox."}
+            </p>
 
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          type="submit"
-          className="px-6 py-3 bg-white text-orange font-bold rounded-full shadow-lg"
-        >
-          Subscribe
-        </motion.button>
-      </form>
-    </AnimatedSection>
-  </div>
-</section>
+            {!isSubscribed && (
+              <form 
+                onSubmit={handleSubmit}
+                className="flex flex-col sm:flex-row gap-3 max-w-xl mx-auto"
+              >
 
+                <input
+                  type="text"
+                  name="FIRSTNAME"
+                  required
+                  placeholder="Your Name"
+                  className="flex-1 px-5 py-3 rounded-full bg-white/50 border border-white/70 text-white placeholder:text-white/80 focus:bg-white/30 focus:border-white outline-none transition-all"
+                />
 
+                <input
+                  type="email"
+                  name="EMAIL"
+                  required
+                  placeholder="your@email.com"
+                  className="flex-1 px-5 py-3 rounded-full bg-white/50 border border-white/70 text-white placeholder:text-white/80 focus:bg-white/30 focus:border-white outline-none transition-all"
+                />
+
+                <input type="text" name="email_address_check" value="" style={{ display: 'none' }} readOnly />
+                <input type="hidden" name="locale" value="en" />
+                <input type="hidden" name="html_type" value="simple" />
+
+                {/* hCaptcha */}
+                <div className="w-full flex justify-center my-4">
+                  <HCaptcha
+                    sitekey="YOUR_SITE_KEY_HERE"
+                    onVerify={(token) => setCaptchaToken(token)}
+                    theme="dark"
+                    ref={captchaRef}
+                  />
+                </div>
+
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  type="submit"
+                  className="px-6 py-3 bg-white text-orange font-bold rounded-full shadow-lg"
+                >
+                  {status === 'loading' ? "Submitting..." : "Subscribe"}
+                </motion.button>
+
+              </form>
+            )}
+          </AnimatedSection>
+        </div>
+      </section>
 
     </Layout>
   );
