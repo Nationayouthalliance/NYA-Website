@@ -475,50 +475,48 @@ const Index = () => {
 
             {!isSubscribed && (
               <form 
-                onSubmit={handleSubmit}
-                className="flex flex-col sm:flex-row gap-3 max-w-xl mx-auto"
-              >
+  onSubmit={handleSubmit}
+  className="flex flex-col gap-4 max-w-2xl mx-auto"
+>
 
-                <input
-                  type="text"
-                  name="FIRSTNAME"
-                  required
-                  placeholder="Your Name"
-                  className="flex-1 px-5 py-3 rounded-full bg-white/50 border border-white/70 text-white placeholder:text-white/80 focus:bg-white/30 focus:border-white outline-none transition-all"
-                />
+  <div className="flex flex-col sm:flex-row gap-3">
+    <input
+      type="text"
+      name="FIRSTNAME"
+      required
+      placeholder="Your Name"
+      className="w-full px-4 py-2.5 rounded-xl bg-white/50 border border-white/70 text-white placeholder:text-white/80 focus:bg-white/30 focus:border-white outline-none transition-all"
+    />
 
-                <input
-                  type="email"
-                  name="EMAIL"
-                  required
-                  placeholder="your@email.com"
-                  className="flex-1 px-5 py-3 rounded-full bg-white/50 border border-white/70 text-white placeholder:text-white/80 focus:bg-white/30 focus:border-white outline-none transition-all"
-                />
+    <input
+      type="email"
+      name="EMAIL"
+      required
+      placeholder="your@email.com"
+      className="w-full px-4 py-2.5 rounded-xl bg-white/50 border border-white/70 text-white placeholder:text-white/80 focus:bg-white/30 focus:border-white outline-none transition-all"
+    />
+  </div>
 
-                <input type="text" name="email_address_check" value="" style={{ display: 'none' }} readOnly />
-                <input type="hidden" name="locale" value="en" />
-                <input type="hidden" name="html_type" value="simple" />
+  <motion.button
+    whileHover={{ scale: 1.05 }}
+    whileTap={{ scale: 0.95 }}
+    type="submit"
+    className="mx-auto px-6 py-3 bg-white text-orange font-bold rounded-full shadow-lg"
+  >
+    {status === 'loading' ? "Submitting..." : "Subscribe"}
+  </motion.button>
 
-                {/* hCaptcha */}
-                <div className="w-full flex justify-center my-4">
-                  <HCaptcha
-                    sitekey="baf859da-095e-47c2-a670-bc0cd9084d08"
-                    onVerify={(token) => setCaptchaToken(token)}
-                    theme="dark"
-                    ref={captchaRef}
-                  />
-                </div>
+  <div className="flex justify-center">
+    <HCaptcha
+      sitekey="YOUR_SITE_KEY_HERE"
+      onVerify={(token) => setCaptchaToken(token)}
+      theme="dark"
+      ref={captchaRef}
+    />
+  </div>
 
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  type="submit"
-                  className="px-6 py-3 bg-white text-orange font-bold rounded-full shadow-lg"
-                >
-                  {status === 'loading' ? "Submitting..." : "Subscribe"}
-                </motion.button>
+</form>
 
-              </form>
             )}
           </AnimatedSection>
         </div>
