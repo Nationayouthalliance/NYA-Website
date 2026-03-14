@@ -13,7 +13,7 @@ const platforms = [
     icon: FaDiscord,
     color: 'bg-[#5865F2]',
     available: true,
-    link: 'https://discord.gg/EVSEgZ2c',
+    link: 'https://discord.com/invite/MWJGf7QdJX',
     buttonText: 'Join Discord',
   },
   {
@@ -32,8 +32,9 @@ const platforms = [
     description: 'Get updates, announcements, and stay connected on the go.',
     icon: FaTelegramPlane,
     color: 'bg-[#0088cc]',
-    available: false,
-    buttonText: 'Coming Soon',
+    available: true,
+    link: 'https://t.me/nationalyouthalliance',
+    buttonText: 'Join Telegram',
   },
   {
     id: 'whatsapp',
