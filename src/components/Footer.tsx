@@ -12,7 +12,7 @@ import {
   Facebook,
   ExternalLink
 } from 'lucide-react';
-import { FaDiscord, FaRedditAlien, FaPinterestP } from "react-icons/fa";
+import { FaDiscord, FaRedditAlien, FaPinterestP, FaTelegram } from "react-icons/fa";
 
 const footerLinks = {
   movement: [
@@ -38,6 +38,7 @@ const socialLinks = [
   { name: 'Discord', icon: FaDiscord, url: 'https://discord.com/invite/MWJGf7QdJX' },
   { name: 'Instagram', icon: Instagram, url: 'https://www.instagram.com/nationalyouthalliance.genz/' },
   { name: 'Reddit', icon: FaRedditAlien, url: 'https://www.reddit.com/r/NYA_Official/' },
+  { name: 'Telegram', icon: FaTelegram, url: 'https://t.me/nationalyouthalliance' },
   { name: 'Twitter', icon: Twitter, url: 'https://x.com/NYA_Genz' },
   { name: 'Facebook', icon: Facebook, url: 'https://www.facebook.com/people/National-Youth-Alliance/61585687675924/' },
   { name: 'YouTube', icon: Youtube, url: 'https://www.youtube.com/@NationalYouthAlliance-w6i' },
