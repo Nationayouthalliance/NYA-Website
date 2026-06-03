@@ -350,7 +350,7 @@ No shortcuts. No hacks. No experiments in main flow.
 
 ## 21. Owner & Authority
 
-Project Owner: **Nishit Kumar**  
+Project Owner: **Krazy Hacker**  
 Organization: **National Youth Alliance**
 
 All architectural decisions go through owner.
